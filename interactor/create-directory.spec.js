@@ -51,13 +51,81 @@ describe('CreateDirectory', () => {
         .stub(directoryRepository, 'getById')
         .returns(null);
 
-      createDirectory.execute(request);
+      let createDirectoryFn = function () { createDirectory.execute(request); };
+
+      expect(createDirectoryFn).to.throw('The specified parent directory does not exist');
 
       getAssociationByIdStub.restore();
       getDirectoryByIdStub.restore();
 
       sinon.assert.calledOnce(getDirectoryByIdStub);
       sinon.assert.calledWith(getDirectoryByIdStub, 16);
+    });
+
+    it('should throw an exception if trying to create a direcory with a key already exists', () => {
+      let request = new CreateDirectoryRequest('Dev Inbox', 1, 8);
+      let association = new Entity.Association(8, 'my-association', 'My Association', 'Company');
+      let parentDirectory = new Entity.Directory(1, 8, 0, 'inbox', 'Inbox');
+      let directory = new Entity.Directory(16, 8, 1, 'dev-inbox', 'Dev Inbox');
+
+      let getAssociationByIdStub = sinon
+        .stub(associationRepository, 'getById')
+        .returns(association);
+
+      let getDirectoryByIdStub = sinon
+        .stub(directoryRepository, 'getById')
+        .returns(parentDirectory);
+
+      let getDirectoryByKeyStub = sinon
+        .stub(directoryRepository, 'getByKey')
+        .returns(directory);
+
+      let createDirectoryFn = function () { createDirectory.execute(request); };
+
+      expect(createDirectoryFn).to.throw('The specified directory already exists');
+
+      getAssociationByIdStub.restore();
+      getDirectoryByIdStub.restore();
+      getDirectoryByKeyStub.restore();
+
+      sinon.assert.calledOnce(getDirectoryByKeyStub);
+      sinon.assert.calledWith(getDirectoryByKeyStub, 'dev-inbox');
+    });
+
+    it('should create a directory', () => {
+      let request = new CreateDirectoryRequest('Dev Inbox', 1, 8);
+      let association = new Entity.Association(8, 'my-association', 'My Association', 'Company');
+      let parentDirectory = new Entity.Directory(1, 8, 0, 'inbox', 'Inbox');
+      let expectedNewDirectory = new Entity.Directory(0, 8, 1, 'dev-inbox', 'Dev Inbox');
+      let expectedCreatedDirectory = new Entity.Directory(16, 8, 1, 'dev-inbox', 'Dev Inbox');
+
+      let getAssociationByIdStub = sinon
+        .stub(associationRepository, 'getById')
+        .returns(association);
+
+      let getDirectoryByIdStub = sinon
+        .stub(directoryRepository, 'getById')
+        .returns(parentDirectory);
+
+      let getDirectoryByKeyStub = sinon
+        .stub(directoryRepository, 'getByKey')
+        .returns(null);
+
+      let createDirectoryStub = sinon
+        .stub(directoryRepository, 'create')
+        .returns(expectedCreatedDirectory);
+
+      let directory = createDirectory.execute(request);
+
+      getAssociationByIdStub.restore();
+      getDirectoryByIdStub.restore();
+      getDirectoryByKeyStub.restore();
+      createDirectoryStub.restore();
+
+      sinon.assert.calledOnce(createDirectoryStub);
+      sinon.assert.calledWith(createDirectoryStub, expectedNewDirectory);
+
+      assert.deepEqual(directory, expectedCreatedDirectory, 'Returned created directory object does not equal expected');
     });
   })
 });

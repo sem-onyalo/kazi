@@ -1,6 +1,6 @@
 "use strict";
 
-const Entity = require('../entity')
+const Entity = require('../entity');
 const UrlHelper = require('../util/url-helper');
 
 module.exports = class CreateAssociation {
