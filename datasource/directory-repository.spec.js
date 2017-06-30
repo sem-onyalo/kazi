@@ -24,6 +24,12 @@ describe('DirectoryRepository', () => {
     });
   });
 
+  describe('getByAssociationId', () => {
+    it('should export function', () => {
+      expect(directoryRepository.getByAssociationId).to.be.a('function');
+    });
+  });
+
   describe('create(directory)', () => {
     it('should export function', () => {
       expect(directoryRepository.create).to.be.a('function');

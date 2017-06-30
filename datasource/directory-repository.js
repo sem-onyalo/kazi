@@ -6,11 +6,15 @@ module.exports = class DirectoryRepository {
   }
 
   getById(id) {
-    
+
   }
 
   getByKey(key) {
 
+  }
+
+  getByAssociationId(id) {
+    
   }
 
   create(directory) {
