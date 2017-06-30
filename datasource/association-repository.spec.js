@@ -24,6 +24,12 @@ describe('AssociationRepository', () => {
     });
   });
 
+  describe('getByUserId(id)', () => {
+    it('should export function', () => {
+      expect(associationRepository.getByUserId).to.be.a('function');
+    })
+  });
+
   describe('create(association)', () => {
     it('should export function', () => {
       expect(associationRepository.create).to.be.a('function');

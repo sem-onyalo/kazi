@@ -13,6 +13,10 @@ module.exports = class AssociationRepository {
 
   }
 
+  getByUserId(id) {
+    
+  }
+
   create(association) {
 
   }
