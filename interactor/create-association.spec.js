@@ -23,6 +23,34 @@ describe('CreateAssociation', () => {
       expect(createAssociation.execute).to.be.a('function');
     });
 
+    it('should throw an exception if the association name is empty', () => {
+      let request = new CreateAssociationRequest('', 'Company');
+      let createAssociationFn = function () { createAssociation.execute(request); };
+      expect(createAssociationFn).to.throw('The association name cannot be empty');
+
+      request = new CreateAssociationRequest(undefined, 'Company');
+      createAssociationFn = function () { createAssociation.execute(request); };
+      expect(createAssociationFn).to.throw('The association name cannot be empty');
+
+      request = new CreateAssociationRequest(null, 'Company');
+      createAssociationFn = function () { createAssociation.execute(request); };
+      expect(createAssociationFn).to.throw('The association name cannot be empty');
+    });
+
+    it('should throw an exception if trying to create an association with a key that already exists', () => {
+      let request = new CreateAssociationRequest('My Association', 'Company');
+
+      let getAssociationByKeyStub = sinon
+        .stub(associationRepository, 'getByKey')
+        .returns(new Entity.Association(1, 'my-association', 'My Association', 'Company'));
+
+      let createAssociationFn = function () { createAssociation.execute(request); };
+
+      expect(createAssociationFn).to.throw('An association with that name already exists');
+
+      getAssociationByKeyStub.restore();
+    });
+
     it('should create the association', () => {
       let request = new CreateAssociationRequest('My Association', 'Company');
       let expectedNewAssociation = new Entity.Association(0, 'my-association', 'My Association', 'Company');
@@ -48,20 +76,6 @@ describe('CreateAssociation', () => {
       sinon.assert.calledWith(createAssociationStub, expectedNewAssociation);
 
       assert.deepEqual(actualCreatedAssociation, expectedCreatedAssociation, 'Returned created association object does not equal expected');
-    });
-
-    it('should throw an exception if trying to create an association with a key that already exists', () => {
-      let request = new CreateAssociationRequest('My Association', 'Company');
-
-      let getAssociationByKeyStub = sinon
-        .stub(associationRepository, 'getByKey')
-        .returns(new Entity.Association(1, 'my-association', 'My Association', 'Company'));
-
-      let createAssociationFn = function () { createAssociation.execute(request); };
-
-      expect(createAssociationFn).to.throw('An association with that name already exists');
-
-      getAssociationByKeyStub.restore();
     });
   });
 });

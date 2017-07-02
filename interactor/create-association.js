@@ -2,6 +2,7 @@
 
 const Entity = require('../entity');
 const UrlHelper = require('../util/url-helper');
+const ValidationHelper = require('../util/validation-helper');
 
 module.exports = class CreateAssociation {
   constructor(associationRepository) {
@@ -9,6 +10,8 @@ module.exports = class CreateAssociation {
   }
 
   execute(createAssociationRequest) {
+    ValidationHelper.stringNotNullOrEmpty(createAssociationRequest.Name, 'The association name cannot be empty');
+
     let key = UrlHelper.makeUrlFriendly(createAssociationRequest.Name);
     let association = this._associationRepository.getByKey(key);
 

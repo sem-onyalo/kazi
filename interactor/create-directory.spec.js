@@ -25,6 +25,20 @@ describe('CreateDirectory', () => {
       expect(createDirectory.execute).to.be.a('function');
     });
 
+    it('should throw an exception if the directory name is empty', () => {
+      let request = new CreateDirectoryRequest('', 16, 8);
+      let createDirectoryFn = function () { createDirectory.execute(request); };
+      expect(createDirectoryFn).to.throw('The directory name cannot be empty');
+
+      request = new CreateDirectoryRequest(null, 16, 8);
+      createDirectoryFn = function () { createDirectory.execute(request); };
+      expect(createDirectoryFn).to.throw('The directory name cannot be empty');
+
+      request = new CreateDirectoryRequest(undefined, 16, 8);
+      createDirectoryFn = function () { createDirectory.execute(request); };
+      expect(createDirectoryFn).to.throw('The directory name cannot be empty');
+    });
+
     it('should throw an exception if the association does not exist', () => {
       let request = new CreateDirectoryRequest('My Directory', 16, 8);
       let getAssociationByIdStub = sinon

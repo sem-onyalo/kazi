@@ -25,6 +25,20 @@ describe('CreateTaskRequest', () => {
       expect(createTask.execute).to.be.a('function');
     });
 
+    it('should throw an exception if the task name is empty', () => {
+      let request = new CreateTaskRequest(1, '');
+      let createTaskFn = function() { createTask.execute(request); };
+      expect(createTaskFn).to.throw('The task name cannot be empty');
+
+      request = new CreateTaskRequest(1, null);
+      createTaskFn = function() { createTask.execute(request); };
+      expect(createTaskFn).to.throw('The task name cannot be empty');
+
+      request = new CreateTaskRequest(1, undefined);
+      createTaskFn = function() { createTask.execute(request); };
+      expect(createTaskFn).to.throw('The task name cannot be empty');
+    });
+
     it('should throw an exception if the directory does not exist', () => {
       let request = new CreateTaskRequest(1, 'finish create task interactor');
       let getDirectoryByIdStub = sinon

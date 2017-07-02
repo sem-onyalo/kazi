@@ -2,6 +2,7 @@
 
 const Entity = require('../entity');
 const UrlHelper = require('../util/url-helper');
+const ValidationHelper = require('../util/validation-helper');
 
 module.exports = class CreateDirectory {
   constructor(associationRepository, directoryRepository) {
@@ -10,6 +11,8 @@ module.exports = class CreateDirectory {
   }
 
   execute(createDirectoryRequest) {
+    ValidationHelper.stringNotNullOrEmpty(createDirectoryRequest.Name, 'The directory name cannot be empty');
+
     let association = this._associationRepository.getById(createDirectoryRequest.AssociationId);
     if (association === null) throw 'The specified association does not exist';
 
