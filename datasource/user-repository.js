@@ -5,7 +5,15 @@ module.exports = class UserRepository {
 
   }
 
+  getByUsername(username) {
+
+  }
+
   getByUsernameAndPassword(username, password) {
+
+  }
+
+  create(user) {
     
   }
 }

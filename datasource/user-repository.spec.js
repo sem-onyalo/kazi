@@ -12,9 +12,21 @@ describe('UserRepository', () => {
     userRepository = new UserRepository();
   });
 
+  describe('getByUsername(username)', () => {
+    it('should export function', () => {
+      expect(userRepository.getByUsername).to.be.a('function');
+    });
+  });
+
   describe('getByUsernameAndPassword(username, password)', () => {
     it('should export function', () => {
       expect(userRepository.getByUsernameAndPassword).to.be.a('function');
+    });
+  });
+
+  describe('create(user)', () => {
+    it('should export function', () => {
+      expect(userRepository.create).to.be.a('function');
     });
   });
 })

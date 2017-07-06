@@ -11,5 +11,6 @@ describe('Entity', () => {
     expect(Entity).to.have.property('Directory');
     expect(Entity).to.have.property('Task');
     expect(Entity).to.have.property('User');
+    expect(Entity).to.have.property('UserRole');
   });
 });

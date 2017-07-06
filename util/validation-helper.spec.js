@@ -25,4 +25,16 @@ describe('ValidationHelper', () => {
       expect(stringNotNullOrEmptyFn).to.throw(errorMessage);
     });
   });
+
+  describe('regex(regex, value, errorMessage)', () => {
+    it('should export function', () => {
+      expect(ValidationHelper.regexMatch).to.be.a('function');
+    });
+  });
+
+  describe('existsInArray(array, value)', () => {
+    it('should export function', () => {
+      expect(ValidationHelper.existsInArray).to.be.a('function');
+    });
+  });
 });
