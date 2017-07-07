@@ -24,6 +24,19 @@ describe('ValidationHelper', () => {
       stringNotNullOrEmptyFn = function () { ValidationHelper.stringNotNullOrEmpty('', errorMessage); };
       expect(stringNotNullOrEmptyFn).to.throw(errorMessage);
     });
+
+    it('should return false if the string is null or empty and no error message is provided', () => {
+      let data = [null, undefined, ''];
+      for (let i = 0; i < data.length; i++) {
+        let result = ValidationHelper.stringNotNullOrEmpty(data[i]);
+        assert.strictEqual(result, false, 'The result should be false');
+      }
+    });
+
+    it('should return true if the string is null or empty and no error message is provided', () => {
+      let result = ValidationHelper.stringNotNullOrEmpty('test');
+      assert.strictEqual(result, true, 'The result should be true');
+    });
   });
 
   describe('regex(regex, value, errorMessage)', () => {

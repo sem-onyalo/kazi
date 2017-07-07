@@ -2,8 +2,11 @@
 
 module.exports = {
   stringNotNullOrEmpty: function (value, errorMessage) {
-    if (value === null || value === undefined || value === '')
+    let result = (value === null || value === undefined || value === '');
+    if (result && errorMessage !== null && errorMessage !== undefined && errorMessage !== '')
       throw errorMessage;
+
+    return !result;
   },
 
   regexMatch: function(regex, value, errorMessage) {

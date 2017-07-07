@@ -132,6 +132,7 @@ describe('CreateUser', () => {
       let actualUser = createUser.execute(request);
 
       getAssociationByIdStub.restore();
+      createUserStub.restore();
 
       sinon.assert.calledOnce(getAssociationByIdStub);
       sinon.assert.calledWith(getAssociationByIdStub, request.AssociationId);

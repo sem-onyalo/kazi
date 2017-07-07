@@ -29,4 +29,10 @@ describe('UserRepository', () => {
       expect(userRepository.create).to.be.a('function');
     });
   });
+
+  describe('update(user)', () => {
+    it('should export function', () => {
+      expect(userRepository.update).to.be.a('function');
+    });
+  });
 })

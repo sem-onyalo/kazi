@@ -14,6 +14,10 @@ module.exports = class UserRepository {
   }
 
   create(user) {
+
+  }
+
+  update(user) {
     
   }
 }
