@@ -5,7 +5,7 @@ const expect = require('chai').expect;
 
 const Directory = require('./directory');
 
-describe('Entity.Directory', () => {
+describe('Directory', () => {
   it('should define propreties: Id, AssociationId, ParentId, Key, Name', () => {
     let directory = new Directory(123, 1, 0, 'my-inbox', 'My Inbox');
     expect(directory).to.have.property('Id');

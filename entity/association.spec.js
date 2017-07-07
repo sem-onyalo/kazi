@@ -5,7 +5,7 @@ const expect = require('chai').expect;
 
 const Association = require('./association');
 
-describe('Entity.Association', () => {
+describe('Association', () => {
   it('should define the properties: Id, Key, Name, Alias and set them on init', () => {
     let association = new Association(123, 'my-team', 'My Team', 'Company');
     expect(association).to.have.property('Id');

@@ -5,7 +5,7 @@ const expect = require('chai').expect;
 
 const Component = require('./component');
 
-describe('Entity.Component', () => {
+describe('Component', () => {
   it('should define properties: Id, Key, Name and set them on init', () => {
     let component = new Component(12, 'user-attendance', 'User Attendance');
     expect(component).to.have.property('Id');

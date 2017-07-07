@@ -5,7 +5,7 @@ const expect = require('chai').expect;
 
 const Task = require('./task');
 
-describe('Entity.Task', () => {
+describe('Task', () => {
   it('should define the properties: Id, Name, DirectoryId, DirectoryKey, DirectoryName and set them on init', () => {
     let task = new Task(123, 'task 1', 1, 'my-inbox', 'My Inbox');
     expect(task).to.have.property('Id');
