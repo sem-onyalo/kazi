@@ -41,4 +41,10 @@ describe('DirectoryRepository', () => {
       expect(directoryRepository.update).to.be.a('function');
     });
   });
+
+  describe('delete(id)', () => {
+    it('should export function', () => {
+      expect(directoryRepository.delete).to.be.a('function');
+    });
+  });
 });

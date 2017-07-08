@@ -14,7 +14,7 @@ module.exports = class DirectoryRepository {
   }
 
   getByAssociationId(id) {
-    
+
   }
 
   create(directory) {
@@ -23,5 +23,9 @@ module.exports = class DirectoryRepository {
 
   update(directory) {
 
+  }
+
+  delete(id) {
+    
   }
 }
