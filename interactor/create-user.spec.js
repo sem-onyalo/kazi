@@ -21,7 +21,7 @@ describe('CreateUser', () => {
     userRepository = new Datasource.UserRepository();
     createUser = new CreateUser(associationRepository, userRepository);
 
-    request = new CreateUserRequest('John', 'Doe', 'john.doe', 'Password1!', Entity.UserRole.USER, 1);
+    request = new CreateUserRequest('John', 'Doe', 'john.doe', 'Password1!', 'a1b2c3', Entity.UserRole.USER, 1);
   });
 
   describe('execute(createUserRequest)', () => {
@@ -71,21 +71,7 @@ describe('CreateUser', () => {
       expect(createUserFn).to.throw('The username cannot be empty');
     });
 
-    it('should throw an exception if the password is empty', () => {
-      request.Password = null;
-      let createUserFn = function () { createUser.execute(request); };
-      expect(createUserFn).to.throw('The password cannot be empty');
-
-      request.Password = undefined;
-      createUserFn = function () { createUser.execute(request); };
-      expect(createUserFn).to.throw('The password cannot be empty');
-
-      request.Password = '';
-      createUserFn = function () { createUser.execute(request); };
-      expect(createUserFn).to.throw('The password cannot be empty');
-    });
-
-    it('should throw an exception if password does not meet strength requirements (at least 8 or more, one upper, one lower, one numeric, and one special character)', () => {
+    it('should throw an exception if password is not empty and does not meet strength requirements (at least 8 or more, one upper, one lower, one numeric, and one special character)', () => {
       let data = ['123456789', 'abcdefghi', 'ABCDEFGHI', '!@#$%^&*()', 'P@w1'];
       for (var i = 0; i < data.length; i++) {
         request.Password = data[i];
@@ -141,6 +127,28 @@ describe('CreateUser', () => {
       sinon.assert.calledWith(createUserStub, expectedNewUser);
 
       assert.deepEqual(actualUser, expectedUser, 'Returned user object was not expected value');
+    });
+
+    it('should create the user with an auto-generated auth token if the password is empty', () => {
+      let expectedAuthTokenLength = 64;
+
+      let getAssociationByIdStub = sinon
+        .stub(associationRepository, 'getById')
+        .returns(new Entity.Association(1, 'my-association', 'My Association', 'Company'));
+
+      let createUserStub = sinon
+        .stub(userRepository, 'create')
+        .returnsArg(0);
+
+      let data = [null, undefined, ''];
+      for (let i = 0; i < data.length; i++) {
+        request.Password = data[i];
+        let actualUser = createUser.execute(request);
+
+        assert.strictEqual(actualUser.AuthToken.length, expectedAuthTokenLength, 'Auth token should have been generated if password is empty');
+      }
+
+      createUserStub.restore();
     });
   });
 });

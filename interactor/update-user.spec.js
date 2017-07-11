@@ -52,16 +52,6 @@ describe('UpdateUser', () => {
       }
     });
 
-    it('should throw an exception if both password and auth token are empty', () => {
-      let data = [null, undefined, ''];
-      for (let i = 0; i < data.length; i++) {
-        request.Password = data[i];
-        request.AuthToken = data[i];
-        let updateUserFn = function () { updateUser.execute(request); };
-        expect(updateUserFn).to.throw('The password and auth token cannot both be empty');
-      }
-    });
-
     it('should throw an exception if password does not meet strength requirements (at least 8 or more, one upper, one lower, one numeric, and one special character)', () => {
       let data = ['123456789', 'abcdefghi', 'ABCDEFGHI', '!@#$%^&*()', 'P@w1'];
       for (var i = 0; i < data.length; i++) {
@@ -81,7 +71,7 @@ describe('UpdateUser', () => {
     });
 
     it('should update the user', () => {
-      let expectedUser = new Entity.User(1, 'John', 'Doe', 'john.doe', 'Password1!', 'a1b2c3', Entity.UserRole.USER);
+      let expectedUser = new Entity.User(1, 'John', 'Doe', 'john.doe', 'Password1!', '', Entity.UserRole.USER);
       let updateUserStub = sinon
         .stub(userRepository, 'update')
         .returns(expectedUser);
@@ -104,6 +94,21 @@ describe('UpdateUser', () => {
 
       let updateUserFn = function () { updateUser.execute(request); };
       expect(updateUserFn).to.throw('There was an error updating the user or the user does not exist');
+    });
+
+    it('should update the user with an auto-generated token if the password is empty', () => {
+      let expectedAuthTokenLength = 64;
+      let updateUserStub = sinon
+        .stub(userRepository, 'update')
+        .returnsArg(0);
+
+      let data = [null, undefined, ''];
+      for (let i = 0; i < data.length; i++) {
+        request.Password = data[i];
+        let actualUser = updateUser.execute(request);
+
+        assert.strictEqual(actualUser.AuthToken.length, expectedAuthTokenLength, 'Auth token should have been generated if password is empty');
+      }
     });
   });
 });
