@@ -58,7 +58,7 @@ describe('CreateTaskRequest', () => {
     it('should create the task', () => {
       let request = new CreateTaskRequest(1, 'finish create task interactor');
       let directory = new Entity.Directory(1, 8, 0, 'inbox', 'Inbox');
-      let expectedNewTask = new Entity.Task(0, 'finish create task interactor');
+      let expectedNewTask = new Entity.Task(0, 'finish create task interactor', 1);
       let expectedCreatedTask = new Entity.Task(1, 'finish create task interactor', 1, 'inbox', 'Inbox');
       let getDirectoryByIdStub = sinon
         .stub(directoryRepository, 'getById')

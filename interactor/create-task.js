@@ -15,7 +15,7 @@ module.exports = class CreateTask {
     let dir = this._directoryRepository.getById(createTaskRequest.DirectoryId);
     if (dir == null) throw 'The specified directory does not exist';
 
-    let task = new Entity.Task(0, createTaskRequest.Name);
+    let task = new Entity.Task(0, createTaskRequest.Name, createTaskRequest.DirectoryId);
     return this._taskRepository.create(task);
   }
 }
