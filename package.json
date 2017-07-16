@@ -4,7 +4,8 @@
   "description": "\"kazi application\"",
   "main": "index.js",
   "scripts": {
-    "test": "mocha $(find . -name '*.spec.js')"
+    "test": "mocha $(find . -name '*.spec.js')",
+    "start": "nodemon server.js"
   },
   "author": "Sem Onyalo",
   "license": "ISC",
@@ -14,7 +15,10 @@
     "sinon": "^2.3.5"
   },
   "dependencies": {
+    "body-parser": "^1.17.2",
     "crypto": "0.0.3",
-    "htmlencode": "0.0.4"
+    "express": "^4.15.3",
+    "htmlencode": "0.0.4",
+    "node-ioc": "^2.1.0"
   }
 }

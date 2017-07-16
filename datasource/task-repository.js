@@ -10,7 +10,7 @@ module.exports = class TaskRepository {
   }
 
   getByDirectoryId(id) {
-
+    
   }
 
   create(task) {
@@ -22,6 +22,6 @@ module.exports = class TaskRepository {
   }
 
   delete(id) {
-    
+
   }
 }
