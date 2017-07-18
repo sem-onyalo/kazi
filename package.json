@@ -15,10 +15,11 @@
     "sinon": "^2.3.5"
   },
   "dependencies": {
-    "body-parser": "^1.17.2",
+    "body-parser": "1.17.2",
     "crypto": "0.0.3",
-    "express": "^4.15.3",
+    "express": "4.15.3",
     "htmlencode": "0.0.4",
-    "node-ioc": "^2.1.0"
+    "node-ioc": "2.1.0",
+    "pg": "6.4.1"
   }
 }
