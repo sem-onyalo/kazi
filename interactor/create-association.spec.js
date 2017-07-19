@@ -26,7 +26,7 @@ describe('CreateAssociation', () => {
     it('should throw an exception if the association name is empty', () => {
       let request = new CreateAssociationRequest('', 'Company');
       let createAssociationFn = function () { createAssociation.execute(request); };
-      expect(createAssociationFn).to.throw('The association name cannot be empty');
+      expect(createAssociationFn).to.eventually.throw('The association name cannot be empty');
 
       request = new CreateAssociationRequest(undefined, 'Company');
       createAssociationFn = function () { createAssociation.execute(request); };

@@ -1,27 +1,65 @@
 "use strict";
 
+const Entity = require('../entity');
+
 module.exports = class TaskRepository {
-  constructor() {
-
+  constructor(dbContext) {
+    this._dbContext = dbContext;
   }
 
-  getById(id) {
+  async getById(id) {
+    let text = 'select t.id, t.directory_id, t.name from task t where t.id = $1'
+    let params = [id];
+    let result = await this._dbContext.query(text, params);
 
+    let entity = null;
+    if (result !== null && result.rows.length > 0) {
+      entity = new Entity.Task(result.rows[0].id, result.rows[0].name, result.rows[0].directory_id);
+    }
+
+    return entity;
   }
 
-  getByDirectoryId(id) {
-    
+  async getByDirectoryId(id) {
+    let text = 'select t.id, t.directory_id, t.name from task t where t.directory_id = $1';
+    let params = [id];
+    let result = await this._dbContext.query(text, params);
+
+    let entities = [];
+    if (result !== null) {
+      for (let i = 0; i < result.rows.length; i++) {
+        entities.push(new Entity.Task(result.rows[i].id, result.rows[i].name, result.rows[i].directory_id));
+      }
+    }
+
+    return entities;
   }
 
-  create(task) {
+  async create(task) {
+    let text = 'insert into task (directory_id, name) values ($1, $2) returning id';
+    let params = [task.DirectoryId, task.Name];
+    let result = await this._dbContext.query(text, params);
 
+    if (result !== null && result.rows.length > 0) {
+      task.Id = result.rows[0].id;
+      return task;
+    }
+
+    return null;
   }
 
-  update(task) {
+  async update(task) {
+    let text = 'update task set directory_id = $2, name = $3 where id = $1'
+    let params = [task.Id, task.DirectoryId, task.Name];
+    let result = await this._dbContext.query(text, params);
 
+    return result !== null && result.rowCount > 0 ? task : null;
   }
 
-  delete(id) {
-
+  async delete(id) {
+    let text = 'delete from task where id = $1';
+    let params = [id];
+    let result = await this._dbContext.query(text, params);
+    return result.rowCount;
   }
 }

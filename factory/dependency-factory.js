@@ -4,10 +4,11 @@ const IocContainer = require('node-ioc');
 
 var _defaultContainer = new IocContainer();
 
-_defaultContainer.registerWithTypes().as(require('../datasource/association-repository'));
-_defaultContainer.registerWithTypes().as(require('../datasource/directory-repository'));
-_defaultContainer.registerWithTypes().as(require('../datasource/task-repository'));
-_defaultContainer.registerWithTypes().as(require('../datasource/user-repository'));
+_defaultContainer.register(() => require('../datasource/db-context')).as(require('../datasource/db-context'));
+_defaultContainer.registerWithTypes(require('../datasource/db-context')).as(require('../datasource/association-repository'));
+_defaultContainer.registerWithTypes(require('../datasource/db-context')).as(require('../datasource/directory-repository'));
+_defaultContainer.registerWithTypes(require('../datasource/db-context')).as(require('../datasource/task-repository'));
+_defaultContainer.registerWithTypes(require('../datasource/db-context')).as(require('../datasource/user-repository'));
 _defaultContainer.registerWithTypes(require('../datasource/association-repository')).as(require('../interactor/create-association'));
 _defaultContainer.registerWithTypes(require('../datasource/association-repository')).as(require('../interactor/get-user-associations'));
 _defaultContainer.registerWithTypes(require('../datasource/association-repository'),require('../datasource/directory-repository')).as(require('../interactor/create-directory'));
@@ -20,6 +21,8 @@ _defaultContainer.registerWithTypes(require('../datasource/directory-repository'
 _defaultContainer.registerWithTypes(require('../datasource/task-repository')).as(require('../interactor/delete-task'));
 _defaultContainer.registerWithTypes(require('../datasource/task-repository')).as(require('../interactor/get-tasks'));
 _defaultContainer.registerWithTypes(require('../datasource/task-repository')).as(require('../interactor/update-task'));
+_defaultContainer.registerWithTypes(require('../datasource/user-repository')).as(require('../interactor/update-user'));
+_defaultContainer.registerWithTypes(require('../datasource/user-repository')).as(require('../interactor/authenticate-user'));
 
 module.exports = {
   resolve: function(type, container) {

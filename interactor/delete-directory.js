@@ -7,8 +7,8 @@ module.exports = class DeleteDirectory {
     this._directoryRepository = directoryRepository;
   }
 
-  execute(deleteDirectoryRequest) {
-    let result = this._directoryRepository.delete(deleteDirectoryRequest.DirectoryId);
-    if (!result) throw 'There was an error deleting the directory or the directory does not exist';
+  async execute(deleteDirectoryRequest) {
+    let result = await this._directoryRepository.delete(deleteDirectoryRequest.DirectoryId);
+    if (result === 0) throw 'There was an error deleting the directory or the directory does not exist';
   }
 }

@@ -5,8 +5,8 @@ module.exports = class AuthenticateUser {
     this._userRepository = userRepository;
   }
 
-  execute(authenticateUserRequest) {
-    let user = this._userRepository.getByUsernameAndPassword(authenticateUserRequest.Username, authenticateUserRequest.Password);
-    return user !== null;
+  async execute(authenticateUserRequest) {
+    return await this._userRepository.getByUsernameAndPassword(authenticateUserRequest.Username, authenticateUserRequest.Password);
+    // return user !== null;
   }
 }

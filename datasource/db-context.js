@@ -22,15 +22,22 @@ connPool.on('error', (err, client) => {
 });
 
 module.exports = {
-  ping: function(cb) {
-    connPool.query('select current_date;', (err, res) => {
-      if (err) {
-        console.error(err.message);
-        cb(false);
-      } else {
-        console.log('Ping to database successful');
-        cb(true);
-      }
-    });
+  ping: async function() {
+    try {
+      let result = await connPool.query('select current_date');
+      return true;
+    } catch (ex) {
+      console.error(ex);
+      return false;
+    }
+  },
+
+  query: async function(text, params) {
+    try {
+      return await connPool.query(text, params);
+    } catch (ex) {
+      console.error(ex);
+      return null;
+    }
   }
 }

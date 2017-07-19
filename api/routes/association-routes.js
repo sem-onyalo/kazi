@@ -10,26 +10,38 @@ const SetupAssociationRequest = require('../../interactor/model/setup-associatio
 
 module.exports = function(app) {
   app.route('/users/:userId/associations')
-    .get((req, res) => {
-      let getUserAssociations = DependencyFactory.resolve(GetUserAssociationsInteractor);
-      let request = new GetUserAssociationsRequest(req.params.userId);
-      let associations = getUserAssociations.execute(request);
-      res.json(associations);
+    .get(async (req, res) => {
+      try {
+        let getUserAssociations = DependencyFactory.resolve(GetUserAssociationsInteractor);
+        let request = new GetUserAssociationsRequest(req.params.userId);
+        let associations = await getUserAssociations.execute(request);
+        res.json(associations);
+      } catch (ex) {
+        res.json({ error: ex });
+      }
     });
 
   app.route('/associations')
-    .post((req, res) => {
-      let createAssociationInteractor = DependencyFactory.resolve(CreateAssociationInteractor);
-      let request = new CreateAssociationRequest(req.body.Name, req.body.Alias);
-      let association = createAssociationInteractor.execute(request);
-      res.json(association);
+    .post(async (req, res) => {
+      try {
+        let createAssociationInteractor = DependencyFactory.resolve(CreateAssociationInteractor);
+        let request = new CreateAssociationRequest(req.body.Name, req.body.Alias);
+        let association = await createAssociationInteractor.execute(request);
+        res.json(association);
+      } catch (ex) {
+        res.json({ error: 'Unable to create the association' });
+      }
     });
 
   app.route('/associations/setup')
-    .post((req, res) => {
-      let setupAssociationInteractor = DependencyFactory.resolve(SetupAssociationInteractor);
-      let request = new SetupAssociationRequest(req.body.AssociationName, req.body.AssociationAlias, req.body.DefaultDirectoryName, req.body.AdminFirstName, req.body.AdminLastName, req.body.AdminUsername,req.body.AdminPassword);
-      let response = setupAssociationInteractor.execute(request);
-      res.json(response);
+    .post(async (req, res) => {
+      try {
+        let setupAssociationInteractor = DependencyFactory.resolve(SetupAssociationInteractor);
+        let request = new SetupAssociationRequest(req.body.AssociationName, req.body.AssociationAlias, req.body.DefaultDirectoryName, req.body.AdminFirstName, req.body.AdminLastName, req.body.AdminUsername,req.body.AdminPassword);
+        let response = await setupAssociationInteractor.execute(request);
+        res.json(response);
+      } catch (ex) {
+        res.json({ error: ex });
+      }
     });
 }

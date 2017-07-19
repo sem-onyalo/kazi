@@ -10,20 +10,22 @@ module.exports = class CreateDirectory {
     this._directoryRepository = directoryRepository;
   }
 
-  execute(createDirectoryRequest) {
+  async execute(createDirectoryRequest) {
     ValidationHelper.stringNotNullOrEmpty(createDirectoryRequest.Name, 'The directory name cannot be empty');
 
-    let association = this._associationRepository.getById(createDirectoryRequest.AssociationId);
+    let association = await this._associationRepository.getById(createDirectoryRequest.AssociationId);
     if (association === null) throw 'The specified association does not exist';
 
-    let parentDir = this._directoryRepository.getById(createDirectoryRequest.ParentId);
-    if (parentDir === null) throw 'The specified parent directory does not exist';
+    if (createDirectoryRequest.ParentId > 0) {
+      let parentDir = await this._directoryRepository.getById(createDirectoryRequest.ParentId);
+      if (parentDir === null) throw 'The specified parent directory does not exist';
+    }
 
     let key = UrlHelper.makeUrlFriendly(createDirectoryRequest.Name);
-    let dir = this._directoryRepository.getByKey(key);
+    let dir = await this._directoryRepository.getByKeyAndAssociationId(key, createDirectoryRequest.AssociationId);
     if (dir !== null) throw 'The specified directory already exists';
 
     dir = new Entity.Directory(0, createDirectoryRequest.AssociationId, createDirectoryRequest.ParentId, key, createDirectoryRequest.Name);
-    return this._directoryRepository.create(dir);
+    return await this._directoryRepository.create(dir);
   }
 }

@@ -13,15 +13,15 @@ module.exports = class SetupAssociation {
     this._createUser = createUser;
   }
 
-  execute(setupAssociationRequest) {
+  async execute(setupAssociationRequest) {
     let createAssociationRequest = new CreateAssociationRequest(setupAssociationRequest.AssociationName, setupAssociationRequest.AssociationAlias);
-    let association = this._createAssociation.execute(createAssociationRequest);
+    let association = await this._createAssociation.execute(createAssociationRequest);
 
     let createDirectoryRequest = new CreateDirectoryRequest(setupAssociationRequest.DefaultDirectoryName, 0, association.Id);
-    let directory = this._createDirectory.execute(createDirectoryRequest);
+    let directory = await this._createDirectory.execute(createDirectoryRequest);
 
-    let createUserRequest = new CreateUserRequest(setupAssociationRequest.AdminFirstName, setupAssociationRequest.AdminLastName, setupAssociationRequest.AdminUsername, setupAssociationRequest.AdminPassword, Entity.UserRole.ADMIN, association.Id);
-    let user = this._createUser.execute(createUserRequest);
+    let createUserRequest = new CreateUserRequest(setupAssociationRequest.AdminFirstName, setupAssociationRequest.AdminLastName, setupAssociationRequest.AdminUsername, setupAssociationRequest.AdminPassword, null, Entity.UserRole.ADMIN, association.Id);
+    let user = await this._createUser.execute(createUserRequest);
 
     return new SetupAssociationResponse(association, directory, user);
   }

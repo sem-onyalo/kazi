@@ -5,7 +5,7 @@ module.exports = class GetDirectories {
     this._directoryRepository = directoryRepository;
   }
 
-  execute(getDirectoresRequest) {
-    return this._directoryRepository.getByAssociationId(getDirectoresRequest.AssociationId);
+  async execute(getDirectoresRequest) {
+    return await this._directoryRepository.getByAssociationId(getDirectoresRequest.AssociationId);
   }
 }

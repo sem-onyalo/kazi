@@ -18,9 +18,9 @@ describe('DirectoryRepository', () => {
     });
   });
 
-  describe('getByKey(key)', () => {
+  describe('getByKeyAndAssociationId(key, associationId)', () => {
     it('should export function', () => {
-      expect(directoryRepository.getByKey).to.be.a('function');
+      expect(directoryRepository.getByKeyAndAssociationId).to.be.a('function');
     });
   });
 

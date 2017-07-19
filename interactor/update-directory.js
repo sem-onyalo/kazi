@@ -10,13 +10,13 @@ module.exports = class UpdateDirectory {
     this._directoryRepository = directoryRepository;
   }
 
-  execute(updateDirectoryRequest) {
+  async execute(updateDirectoryRequest) {
     ValidationHelper.stringNotNullOrEmpty(updateDirectoryRequest.DirectoryName, 'The directory name cannot be empty');
 
     let directoryKey = UrlHelper.makeUrlFriendly(updateDirectoryRequest.DirectoryName);
     let directory = new Entity.Directory(updateDirectoryRequest.DirectoryId, updateDirectoryRequest.AssociationId, updateDirectoryRequest.ParentId, directoryKey, updateDirectoryRequest.DirectoryName);
 
-    let updatedDirectory = this._directoryRepository.update(directory);
+    let updatedDirectory = await this._directoryRepository.update(directory);
     if (updatedDirectory == null) throw 'There was an error updating the directory or the directory does not exist';
 
     return updatedDirectory;

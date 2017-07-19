@@ -5,7 +5,7 @@ module.exports = class GetTasks {
     this._taskRepository = taskRepository;
   }
 
-  execute(getTasksRequest) {
-    return this._taskRepository.getByDirectoryId(getTasksRequest.DirectoryId);
+  async execute(getTasksRequest) {
+    return await this._taskRepository.getByDirectoryId(getTasksRequest.DirectoryId);
   }
 }

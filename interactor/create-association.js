@@ -9,11 +9,11 @@ module.exports = class CreateAssociation {
     this._associationRepository = associationRepository;
   }
 
-  execute(createAssociationRequest) {
+  async execute(createAssociationRequest) {
     ValidationHelper.stringNotNullOrEmpty(createAssociationRequest.Name, 'The association name cannot be empty');
 
     let key = UrlHelper.makeUrlFriendly(createAssociationRequest.Name);
-    let association = this._associationRepository.getByKey(key);
+    let association = await this._associationRepository.getByKey(key);
 
     if (association == null) {
       association = new Entity.Association(0, key, createAssociationRequest.Name, createAssociationRequest.Alias);
@@ -21,6 +21,12 @@ module.exports = class CreateAssociation {
       throw 'An association with that name already exists';
     }
 
-    return this._associationRepository.create(association);
+    association = await this._associationRepository.create(association);
+
+    if (association === null) {
+      throw 'The association could not be created';
+    }
+
+    return association;
   }
 }

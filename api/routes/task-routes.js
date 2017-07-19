@@ -12,32 +12,48 @@ const UpdateTaskRequest = require('../../interactor/model/update-task-request');
 
 module.exports = function(app) {
   app.route('/directories/:directoryId/tasks')
-    .get((req, res) => {
-      let getTasksInteractor = DependencyFactory.resolve(GetTasksInteractor);
-      let request = new GetTasksRequest(req.params.directoryId);
-      let tasks = getTasksInteractor.execute(request);
-      res.json(tasks);
+    .get(async (req, res) => {
+      try {
+        let getTasksInteractor = DependencyFactory.resolve(GetTasksInteractor);
+        let request = new GetTasksRequest(req.params.directoryId);
+        let tasks = await getTasksInteractor.execute(request);
+        res.json(tasks);
+      } catch (ex) {
+        res.json({ error: ex });
+      }
     });
 
   app.route('/tasks')
-    .post((req, res) => {
-      let createTaskInteractor = DependencyFactory.resolve(CreateTaskInteractor);
-      let request = new CreateTaskRequest(req.body.DirectoryId, req.body.Name);
-      let task = createTaskInteractor.execute(request);
-      res.json(task);
+    .post(async (req, res) => {
+      try {
+        let createTaskInteractor = DependencyFactory.resolve(CreateTaskInteractor);
+        let request = new CreateTaskRequest(req.body.DirectoryId, req.body.Name);
+        let task = await createTaskInteractor.execute(request);
+        res.json(task);
+      } catch (ex) {
+        res.json({ error: ex });
+      }
     });
 
   app.route('/tasks/:taskId')
-    .put((req, res) => {
-      let updateTaskInteractor = DependencyFactory.resolve(UpdateTaskInteractor);
-      let request = new UpdateTaskRequest(req.params.taskId, req.body.Name);
-      let task = updateTaskInteractor.execute(request);
-      res.json(task);
+    .put(async (req, res) => {
+      try {
+        let updateTaskInteractor = DependencyFactory.resolve(UpdateTaskInteractor);
+        let request = new UpdateTaskRequest(req.params.taskId, req.body.Name);
+        let task = await updateTaskInteractor.execute(request);
+        res.json(task);
+      } catch (ex) {
+        res.json({ error: ex });
+      }
     })
-    .delete((req, res) => {
-      let deleteTaskInteractor = DependencyFactory.resolve(DeleteTaskInteractor);
-      let request = new DeleteTaskRequest(req.params.taskId);
-      deleteTaskInteractor.execute(request);
-      res.json('OK');
+    .delete(async (req, res) => {
+      try {
+        let deleteTaskInteractor = DependencyFactory.resolve(DeleteTaskInteractor);
+        let request = new DeleteTaskRequest(req.params.taskId);
+        await deleteTaskInteractor.execute(request);
+        res.json({ status: 'OK' });
+      } catch (ex) {
+        res.json({ error: ex });
+      }
     });
 }

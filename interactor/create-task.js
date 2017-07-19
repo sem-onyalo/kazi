@@ -9,13 +9,13 @@ module.exports = class CreateTask {
     this._taskRepository = taskRepository;
   }
 
-  execute(createTaskRequest) {
+  async execute(createTaskRequest) {
     ValidationHelper.stringNotNullOrEmpty(createTaskRequest.Name, 'The task name cannot be empty');
 
-    let dir = this._directoryRepository.getById(createTaskRequest.DirectoryId);
+    let dir = await this._directoryRepository.getById(createTaskRequest.DirectoryId);
     if (dir == null) throw 'The specified directory does not exist';
 
     let task = new Entity.Task(0, createTaskRequest.Name, createTaskRequest.DirectoryId);
-    return this._taskRepository.create(task);
+    return await this._taskRepository.create(task);
   }
 }

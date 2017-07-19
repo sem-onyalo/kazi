@@ -7,13 +7,13 @@ module.exports = class UpdateTask {
     this._taskRepository = taskRepository;
   }
 
-  execute(updateTaskRequest) {
+  async execute(updateTaskRequest) {
     ValidationHelper.stringNotNullOrEmpty(updateTaskRequest.TaskName, 'The task name cannot be empty');
 
-    let task = this._taskRepository.getById(updateTaskRequest.TaskId);
+    let task = await this._taskRepository.getById(updateTaskRequest.TaskId);
     if (task === null) throw 'The specified task does not exist';
 
     task.Name = updateTaskRequest.TaskName;
-    return this._taskRepository.update(task);
+    return await this._taskRepository.update(task);
   }
 }

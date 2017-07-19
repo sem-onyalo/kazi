@@ -5,7 +5,7 @@ module.exports = class GetUserAssociations {
     this._associationRepository = associationRepository;
   }
 
-  execute(getUserAssociationsRequest) {
-    return this._associationRepository.getByUserId(getUserAssociationsRequest.UserId);
+  async execute(getUserAssociationsRequest) {
+    return await this._associationRepository.getByUserId(getUserAssociationsRequest.UserId);
   }
 }

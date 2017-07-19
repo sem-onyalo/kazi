@@ -5,8 +5,8 @@ module.exports = class DeleteTask {
     this._taskRepository = taskRepository;
   }
 
-  execute(deleteTaskRequest) {
-    let result = this._taskRepository.delete(deleteTaskRequest.TaskId);
-    if (!result) throw 'There was an error deleting the task or the task does not exist';
+  async execute(deleteTaskRequest) {
+    let result = await this._taskRepository.delete(deleteTaskRequest.TaskId);
+    if (result === 0) throw 'There was an error deleting the task or the task does not exist';
   }
 }

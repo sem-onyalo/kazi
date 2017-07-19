@@ -12,32 +12,48 @@ const UpdateDirectoryRequest = require('../../interactor/model/update-directory-
 
 module.exports = function(app) {
   app.route('/associations/:associationId/directories')
-    .get((req, res) => {
-      let getDirectoriesInteractor = DependencyFactory.resolve(GetDirectoriesInteractor);
-      let request = new GetDirectoriesRequest(req.params.associationId);
-      let directories = getDirectoriesInteractor.execute(request);
-      res.json(directories);
+    .get(async (req, res) => {
+      try {
+        let getDirectoriesInteractor = DependencyFactory.resolve(GetDirectoriesInteractor);
+        let request = new GetDirectoriesRequest(req.params.associationId);
+        let directories = await getDirectoriesInteractor.execute(request);
+        res.json(directories);
+      } catch (ex) {
+        res.json({ error: ex });
+      }
     });
 
   app.route('/directories')
-    .post((req, res) => {
-      let createDirectoryInteractor = DependencyFactory.resolve(CreateDirectoryInteractor);
-      let request = new CreateDirectoryRequest(req.body.Name, req.body.ParentId, req.body.AssociationId);
-      let directory = createDirectoryInteractor.execute(request);
-      res.json(directory);
+    .post(async (req, res) => {
+      try {
+        let createDirectoryInteractor = DependencyFactory.resolve(CreateDirectoryInteractor);
+        let request = new CreateDirectoryRequest(req.body.Name, req.body.ParentId, req.body.AssociationId);
+        let directory = await createDirectoryInteractor.execute(request);
+        res.json(directory);
+      } catch (ex) {
+        res.json({ error: ex });
+      }
     });
 
   app.route('/directories/:directoryId')
-    .put((req, res) => {
-      let updateDirectoryInteractor = DependencyFactory.resolve(UpdateDirectoryInteractor);
-      let request = new UpdateDirectoryRequest(req.params.directoryId, req.body.Name, req.body.ParentId, req.body.AssociationId);
-      let directory = updateDirectoryInteractor.execute(request);
-      res.json(directory);
+    .put(async (req, res) => {
+      try {
+        let updateDirectoryInteractor = DependencyFactory.resolve(UpdateDirectoryInteractor);
+        let request = new UpdateDirectoryRequest(req.params.directoryId, req.body.Name, req.body.ParentId, req.body.AssociationId);
+        let directory = await updateDirectoryInteractor.execute(request);
+        res.json(directory);
+      } catch (ex) {
+        res.json({ error: ex });
+      }
     })
-    .delete((req, res) => {
-      let deleteDirectoryInteractor = DependencyFactory.resolve(DeleteDirectoryInteractor);
-      let request = new DeleteDirectoryRequest(req.params.directoryId);
-      deleteDirectoryInteractor.execute(request);
-      res.json('OK');
+    .delete(async (req, res) => {
+      try {
+        let deleteDirectoryInteractor = DependencyFactory.resolve(DeleteDirectoryInteractor);
+        let request = new DeleteDirectoryRequest(req.params.directoryId);
+        await deleteDirectoryInteractor.execute(request);
+        res.json({ status: 'OK'});
+      } catch (ex) {
+        res.json({ error: ex });
+      }
     });
 }

@@ -11,7 +11,7 @@ module.exports = class UpdateUser {
     this._userRepository = userRepository;
   }
 
-  execute(updateUserRequest) {
+  async execute(updateUserRequest) {
     ValidationHelper.stringNotNullOrEmpty(updateUserRequest.FirstName, 'The first name cannot be empty');
     ValidationHelper.stringNotNullOrEmpty(updateUserRequest.LastName, 'The last name cannot be empty');
     ValidationHelper.stringNotNullOrEmpty(updateUserRequest.Username, 'The username cannot be empty');
@@ -26,8 +26,11 @@ module.exports = class UpdateUser {
       authToken = SecurityHelper.generateRandomString(Constants.USER_AUTH_TOKEN_LENGTH);
     }
 
-    let user = new Entity.User(updateUserRequest.UserId, updateUserRequest.FirstName, updateUserRequest.LastName, updateUserRequest.Username, updateUserRequest.Password, authToken, updateUserRequest.UserRole);
-    let updatedUser = this._userRepository.update(user);
+    let user = await this._userRepository.getByUsername(updateUserRequest.Username);
+    if (user !== null && user.Id !== updateUserRequest.UserId && user.Username === updateUserRequest.Username) throw 'A user with that username already exists';
+
+    user = new Entity.User(updateUserRequest.UserId, updateUserRequest.FirstName, updateUserRequest.LastName, updateUserRequest.Username, updateUserRequest.Password, authToken, updateUserRequest.UserRole);
+    let updatedUser = await this._userRepository.update(user);
 
     if (updatedUser == null) throw 'There was an error updating the user or the user does not exist';
     return updatedUser;

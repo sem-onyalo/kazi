@@ -11,4 +11,10 @@ describe('DbContext', () => {
       expect(DbContext.ping).to.be.a('function');
     });
   });
+
+  describe('query()', () => {
+    it('should export function', () => {
+      expect(DbContext.query).to.be.a('function');
+    });
+  });
 });

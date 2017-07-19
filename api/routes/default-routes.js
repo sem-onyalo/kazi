@@ -9,9 +9,8 @@ module.exports = function(app) {
     });
 
   app.route('/ping')
-    .get((req, res) => {
-      DbContext.ping((result) => {
-        res.json('Database ping success is: ' + result.toString());
-      });
+    .get(async (req, res) => {
+      let result = await DbContext.ping();
+      res.json('Database ping success is: ' + result.toString());
     });
 }

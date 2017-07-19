@@ -11,7 +11,7 @@ module.exports = class CreateUser {
     this._userRepository = userRepository;
   }
 
-  execute(createUserRequest) {
+  async execute(createUserRequest) {
     ValidationHelper.stringNotNullOrEmpty(createUserRequest.FirstName, 'The first name cannot be empty');
     ValidationHelper.stringNotNullOrEmpty(createUserRequest.LastName, 'The last name cannot be empty');
     ValidationHelper.stringNotNullOrEmpty(createUserRequest.Username, 'The username cannot be empty');
@@ -21,7 +21,7 @@ module.exports = class CreateUser {
       ValidationHelper.regexMatch(Constants.REGEX_PASSWORD, createUserRequest.Password, 'The password must be a minimum of 8 characters and include at least one upper case, one lower case, one numeric, and one special character');
     }
 
-    let association = this._associationRepository.getById(createUserRequest.AssociationId);
+    let association = await this._associationRepository.getById(createUserRequest.AssociationId);
     if (association == null) throw 'The specified association does not exist';
 
     let authToken = '';
@@ -29,7 +29,18 @@ module.exports = class CreateUser {
       authToken = SecurityHelper.generateRandomString(Constants.USER_AUTH_TOKEN_LENGTH);
     }
 
-    let user = new Entity.User(0, createUserRequest.FirstName, createUserRequest.LastName, createUserRequest.Username, createUserRequest.Password, authToken, createUserRequest.UserRole);
-    return this._userRepository.create(user);
+    let user = await this._userRepository.getByUsername(createUserRequest.Username);
+    if (user !== null) throw 'A user with that username already exists';
+
+    user = new Entity.User(0, createUserRequest.FirstName, createUserRequest.LastName, createUserRequest.Username, createUserRequest.Password, authToken, createUserRequest.UserRole);
+    user = await this._userRepository.create(user);
+
+    if (user === null) throw 'Could not create user';
+
+    let addUserResult = await this._associationRepository.addUser(createUserRequest.AssociationId, user.Id);
+
+    if (addUserResult === 0) throw 'Created user but could not add to association';
+
+    return user;
   }
 }
