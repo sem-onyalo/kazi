@@ -8,6 +8,9 @@
     "start": "node server.js",
     "start-dev": "nodemon server.js"
   },
+  "engines": {
+    "node": "8.0.0"
+  },
   "author": "Sem Onyalo",
   "license": "ISC",
   "devDependencies": {
