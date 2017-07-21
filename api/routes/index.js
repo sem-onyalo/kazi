@@ -13,6 +13,10 @@ module.exports = function(app) {
   directoryRoutes(app);
   taskRoutes(app);
   userRoutes(app);
+
+  app.use((req, res) => {
+    res.status(400).send({ error: req.originalUrl + ' not found' });
+  });
 }
 
 function authorizeRequest(req, res, next) {
