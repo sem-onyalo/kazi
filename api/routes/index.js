@@ -1,4 +1,5 @@
 const associationRoutes = require('./association-routes');
+const cors = require('cors');
 const defaultRoutes = require('./default-routes');
 const directoryRoutes = require('./directory-routes');
 const taskRoutes = require('./task-routes');
@@ -7,6 +8,8 @@ const userRoutes = require('./user-routes');
 const openPaths = ['/', '/ping'];
 
 module.exports = function(app) {
+  app.use(cors());
+  app.options('*', cors());
   app.use(authorizeRequest);
   associationRoutes(app);
   defaultRoutes(app);
@@ -28,10 +31,6 @@ function authorizeRequest(req, res, next) {
       return res.status(401).send('Authorization Required');
     }
   }
-
-  // TODO: figure out if CORS should be enabled globally like this (i.e. security)
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   
   next();
 }
