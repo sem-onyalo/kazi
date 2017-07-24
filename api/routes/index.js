@@ -26,10 +26,12 @@ function authorizeRequest(req, res, next) {
       return res.status(401).send('Authorization Required');
     } else if (auth !== 'Bearer sde5dB8Qiswn^2skKliOpwF647Df!FFus30F*rr27') {
       return res.status(401).send('Authorization Required');
-    } else {
-      next();
     }
-  } else {
-    next();
   }
+
+  // TODO: figure out if CORS should be enabled globally like this (i.e. security)
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  
+  next();
 }
