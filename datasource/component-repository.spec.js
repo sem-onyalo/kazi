@@ -12,6 +12,12 @@ describe('ComponentRepository', () => {
     componentRepository = new ComponentRepository();
   });
 
+  describe('get()', () => {
+    it('should export function', () => {
+      expect(componentRepository.get).to.be.a('function');
+    });
+  });
+
   describe('getByDirectoryId(id)', () => {
     it('should export function', () => {
       expect(componentRepository.getByDirectoryId).to.be.a('function');

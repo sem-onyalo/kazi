@@ -1,4 +1,5 @@
 const associationRoutes = require('./association-routes');
+const componentRoutes = require('./component-routes');
 const cors = require('cors');
 const defaultRoutes = require('./default-routes');
 const directoryRoutes = require('./directory-routes');
@@ -12,6 +13,7 @@ module.exports = function(app) {
   app.options('*', cors());
   app.use(authorizeRequest);
   associationRoutes(app);
+  componentRoutes(app);
   defaultRoutes(app);
   directoryRoutes(app);
   taskRoutes(app);
@@ -31,6 +33,6 @@ function authorizeRequest(req, res, next) {
       return res.status(401).send('Authorization Required');
     }
   }
-  
+
   next();
 }
