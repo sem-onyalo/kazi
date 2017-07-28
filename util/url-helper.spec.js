@@ -16,6 +16,11 @@ describe('UrlHelper', () => {
       assert.strictEqual(result ,'r-o', 'Special characters should not exist in result');
     });
 
+    it('should replace all spaces with hyphens', () => {
+      let result = UrlHelper.makeUrlFriendly('the quick brown fox');
+      assert.strictEqual(result, 'the-quick-brown-fox', 'All spaces should have been replaced with hyphens');
+    });
+
     it('should make all characters lowercase', () => {
       let result = UrlHelper.makeUrlFriendly('ArrearS');
       assert.strictEqual(result, 'arrears', 'All characters should be lowercase');
