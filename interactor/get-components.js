@@ -5,7 +5,11 @@ module.exports = class GetComponents {
     this._componentRepository = componentRepository;
   }
 
-  async execute() {
-    return await this._componentRepository.get();
+  async execute(request) {
+    if (request.DirectoryId) {
+      return await this._componentRepository.getByDirectoryId(request.DirectoryId);
+    } else {
+      return await this._componentRepository.get();
+    }
   }
 }
