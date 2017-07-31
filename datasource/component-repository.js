@@ -60,7 +60,7 @@ module.exports = class ComponentRepository {
   async addToDirectory(componentId, directoryId) {
     let text = 'insert into directory_component(directory_id, component_id) values ($1, $2)';
     let params = [directoryId, componentId];
-    let result = await this._dbContext.query(text, params);console.log(result);
+    let result = await this._dbContext.query(text, params);
     return result.rowCount;
   }
 
