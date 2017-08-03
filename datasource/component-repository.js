@@ -35,7 +35,7 @@ module.exports = class ComponentRepository {
   //   return entity;
   // }
 
-  async getByDirectoryId(id) {
+  async getByDirectoryId(id) { // TODO should be getRelationshipByDirectoryId
     let text = 'select c.id, c.key, c.name, coalesce(dc.directory_id,0) as directory_id from component c '
       + 'left join directory_component dc on dc.component_id = c.id and dc.directory_id = $1';
     let params = [id];
@@ -53,8 +53,24 @@ module.exports = class ComponentRepository {
     return entities;
   }
 
-  getByTaskId(id) {
+  async getByTaskId(id) {
+    let text = 'select c.id, c.key, c.name from component c '
+      + 'inner join directory_component dc on dc.component_id = c.id '
+      + 'inner join directory d on d.id = dc.directory_id '
+      + 'inner join task t on t.directory_id = d.id '
+      + 'where t.id = $1';
+    let params = [id];
+    let result = await this._dbContext.query(text, params);
 
+    let entities = [];
+    if (result && result.rows.length > 0) {
+      for (let i = 0; i < result.rows.length; i++) {
+        let component = new Entity.Component(result.rows[i].id, result.rows[i].key, result.rows[i].name);
+        entities.push(component);
+      }
+    }
+
+    return entities;
   }
 
   async addToDirectory(componentId, directoryId) {

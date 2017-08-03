@@ -18,7 +18,7 @@ describe('ComponentRepository', () => {
     });
   });
 
-  describe('getByDirectoryId(id)', () => {
+  describe('getByDirectoryId(id)', () => { // TODO should be getRelationshipByDirectoryId
     it('should export function', () => {
       expect(componentRepository.getByDirectoryId).to.be.a('function');
     });
