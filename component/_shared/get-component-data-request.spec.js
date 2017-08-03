@@ -3,11 +3,11 @@
 const assert = require('chai').assert;
 const expect = require('chai').expect;
 
-const ComponentRequest = require('./component-request');
+const GetComponentDataRequest = require('./get-component-data-request');
 
-describe('ComponentRequest', () => {
+describe('GetComponentDataRequest', () => {
   it('should define the properties: EntityId, EntityType, DisplayType and set them on init', () => {
-    let request = new ComponentRequest(1, 2, 3);
+    let request = new GetComponentDataRequest(1, 2, 3);
     expect(request).to.have.property('EntityId');
     expect(request).to.have.property('EntityType');
     expect(request).to.have.property('DisplayType');
