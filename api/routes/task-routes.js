@@ -5,6 +5,8 @@ const CreateTaskRequest = require('../../interactor/model/create-task-request');
 const DeleteTaskInteractor = require('../../interactor/delete-task');
 const DeleteTaskRequest = require('../../interactor/model/delete-task-request');
 const DependencyFactory = require('../../factory/dependency-factory');
+const GetTaskComponentsDataInteractor = require('../../interactor/get-task-components-data');
+const GetTaskComponentsDataRequest = require('../../interactor/model/get-task-components-data-request');
 const GetTasksInteractor = require('../../interactor/get-tasks');
 const GetTasksRequest = require('../../interactor/model/get-tasks-request');
 const UpdateTaskInteractor = require('../../interactor/update-task');
@@ -52,6 +54,18 @@ module.exports = function(app) {
         let request = new DeleteTaskRequest(req.params.taskId);
         await deleteTaskInteractor.execute(request);
         res.json({ status: 'OK' });
+      } catch (ex) {
+        res.json({ error: ex });
+      }
+    });
+
+  app.route('/tasks/:taskId/components')
+    .get(async (req, res) => {
+      try{
+        let interactor = DependencyFactory.resolve(GetTaskComponentsDataInteractor);
+        let request = new GetTaskComponentsDataRequest(req.params.taskId, req.query.displaytype);
+        let response = await interactor.execute(request);
+        res.json({ Data: response, status: 'OK' });
       } catch (ex) {
         res.json({ error: ex });
       }
