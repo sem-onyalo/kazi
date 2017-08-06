@@ -41,6 +41,8 @@ module.exports = class CreateUser {
 
     if (addUserResult === 0) throw 'Created user but could not add to association';
 
+    delete user.Password;
+    
     return user;
   }
 }

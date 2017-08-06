@@ -27,7 +27,18 @@ module.exports = function (app) {
         let authenticateUserInteractor = DependencyFactory.resolve(AuthenticateUserInteractor);
         let request = new AuthenticateUserRequest(req.body.Username, req.body.Password);
         let user = await authenticateUserInteractor.execute(request);
-        res.json(user);
+        if (user) req.session.user = user;
+        res.redirect('/associations');
+      } catch (ex) {
+        res.json({ error: ex });
+      }
+    });
+
+  app.route('/users/expire')
+    .get((req, res) => {
+      try {
+        req.session.reset();
+        res.redirect('/');
       } catch (ex) {
         res.json({ error: ex });
       }

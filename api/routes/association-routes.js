@@ -9,19 +9,29 @@ const SetupAssociationInteractor = require('../../interactor/setup-association')
 const SetupAssociationRequest = require('../../interactor/model/setup-association-request');
 
 module.exports = function(app) {
-  app.route('/users/:userId/associations')
+  // app.route('/users/:userId/associations')
+  //   .get(async (req, res) => {
+  //     try {
+  //       let getUserAssociations = DependencyFactory.resolve(GetUserAssociationsInteractor);
+  //       let request = new GetUserAssociationsRequest(req.params.userId);
+  //       let associations = await getUserAssociations.execute(request);
+  //       res.json(associations);
+  //     } catch (ex) {
+  //       res.json({ error: ex });
+  //     }
+  //   });
+
+  app.route('/associations')
     .get(async (req, res) => {
       try {
         let getUserAssociations = DependencyFactory.resolve(GetUserAssociationsInteractor);
-        let request = new GetUserAssociationsRequest(req.params.userId);
+        let request = new GetUserAssociationsRequest(req.session.user.Id);
         let associations = await getUserAssociations.execute(request);
         res.json(associations);
       } catch (ex) {
         res.json({ error: ex });
       }
-    });
-
-  app.route('/associations')
+    })
     .post(async (req, res) => {
       try {
         let createAssociationInteractor = DependencyFactory.resolve(CreateAssociationInteractor);

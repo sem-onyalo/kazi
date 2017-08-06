@@ -32,7 +32,10 @@ module.exports = class UpdateUser {
     user = new Entity.User(updateUserRequest.UserId, updateUserRequest.FirstName, updateUserRequest.LastName, updateUserRequest.Username, updateUserRequest.Password, authToken, updateUserRequest.UserRole);
     let updatedUser = await this._userRepository.update(user);
 
-    if (updatedUser == null) throw 'There was an error updating the user or the user does not exist';
+    if (!updatedUser) throw 'There was an error updating the user or the user does not exist';
+
+    delete updatedUser.Password;
+    
     return updatedUser;
   }
 }
