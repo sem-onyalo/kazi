@@ -38,10 +38,7 @@ module.exports = function(app) {
 }
 
 async function authorizeRequest(req, res, next) {
-  console.log('***TEMP-LOG*** Request path: ' + req.path + ' method: ' + req.method);
   if (openPaths.indexOf(req.path) < 0 && openMethods.indexOf(req.method) < 0) {
-    console.log('***TEMP-LOG*** Request path: ' + req.path + ' method: ' + req.method + ' [CHECK_AUTH]');
-    console.log('***TEMP-LOG*** Request path: ' + req.path + ' method: ' + req.method, req.session);
     if (req.session && req.session.user) {
       let userRepository = DependencyFactory.resolve(Datasource.UserRepository);
       let user = await userRepository.getByUsername(req.session.user.Username);
