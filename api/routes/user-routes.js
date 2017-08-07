@@ -29,7 +29,6 @@ module.exports = function (app) {
         let user = await authenticateUserInteractor.execute(request);
         if (user) {
           req.session.user = user;
-          console.log(req.session.user);
           res.redirect('/associations');
         } else {
           res.status(401).send('Authorization Required');
@@ -42,7 +41,7 @@ module.exports = function (app) {
   app.route('/users/expire')
     .get((req, res) => {
       try {
-        req.session.reset();
+        req.session.destroy();
         res.redirect('/');
       } catch (ex) {
         res.json({ error: ex });

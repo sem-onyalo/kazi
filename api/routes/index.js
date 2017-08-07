@@ -5,24 +5,20 @@ const Datasource = require('../../datasource');
 const defaultRoutes = require('./default-routes');
 const DependencyFactory = require('../../factory/dependency-factory');
 const directoryRoutes = require('./directory-routes');
-const session = require('client-sessions');
+const session = require('express-session');
 const taskRoutes = require('./task-routes');
 const userRoutes = require('./user-routes');
 
-const openMethods = ['OPTIONS'];
 const openPaths = ['/', '/ping', '/users/authenticate'];
 
 module.exports = function(app) {
   app.use(cors());
   app.options('*', cors());
   app.use(session({
-    cookieName: 'session',
     secret: 'sde5dB8Qiswn^2skKliOpwF647Df!FFus30F*rr27',
-    duration: 30 * 60 * 1000,
-    activeDuration: 5 * 60 * 1000/*,
-    httpOnly: true,
-    ephemeral: true*/,
-    secure: false
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false }
   }));
   app.use(authorizeRequest);
   associationRoutes(app);
@@ -44,10 +40,9 @@ async function authorizeRequest(req, res, next) {
       let user = await userRepository.getByUsername(req.session.user.Username);
       if (user) {
         delete user.Password;
-        req.user = user;
+        // req.user = user;
         req.session.user = user;
       } else {
-        req.session.reset();
         return res.status(401).send('Authorization Required');
       }
     } else {
