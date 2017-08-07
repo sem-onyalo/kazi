@@ -27,6 +27,7 @@ module.exports = function (app) {
         let authenticateUserInteractor = DependencyFactory.resolve(AuthenticateUserInteractor);
         let request = new AuthenticateUserRequest(req.body.Username, req.body.Password);
         let user = await authenticateUserInteractor.execute(request);
+        console.log('***TEMP-LOG*** /users/authenticate ' + user);
         if (user) req.session.user = user;
         res.redirect('/associations');
       } catch (ex) {
