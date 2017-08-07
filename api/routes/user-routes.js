@@ -30,8 +30,7 @@ module.exports = function (app) {
         console.log('***TEMP-LOG*** /users/authenticate ' + user);
         if (user) {
           req.session.user = user;
-          res.json({ message: 'Authorized' });
-          // res.redirect('/associations');
+          res.redirect('/associations');
         } else {
           res.status(401).send('Authorization Required');
         }
