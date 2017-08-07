@@ -12,7 +12,7 @@ const userRoutes = require('./user-routes');
 const openPaths = ['/', '/ping', '/users/authenticate'];
 
 module.exports = function(app) {
-  app.use(cors({ origin: 'http://localhost' }));
+  app.use(cors({ origin: 'http://localhost', credentials: true }));
   app.options('*', cors());
   app.use(session({
     secret: 'sde5dB8Qiswn^2skKliOpwF647Df!FFus30F*rr27',
