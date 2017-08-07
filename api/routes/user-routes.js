@@ -29,6 +29,7 @@ module.exports = function (app) {
         let user = await authenticateUserInteractor.execute(request);
         if (user) {
           req.session.user = user;
+          console.log(req.session.user);
           res.redirect('/associations');
         } else {
           res.status(401).send('Authorization Required');
