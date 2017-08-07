@@ -9,6 +9,7 @@ const session = require('client-sessions');
 const taskRoutes = require('./task-routes');
 const userRoutes = require('./user-routes');
 
+const openMethods = ['OPTIONS'];
 const openPaths = ['/', '/ping', '/users/authenticate'];
 
 module.exports = function(app) {
@@ -37,7 +38,7 @@ module.exports = function(app) {
 }
 
 async function authorizeRequest(req, res, next) {
-  if (openPaths.indexOf(req.path) < 0) {
+  if (openPaths.indexOf(req.path) < 0 || openMethods.indexOf(req.method) < 0) {
     if (req.session && req.session.user) {
       let userRepository = DependencyFactory.resolve(Datasource.UserRepository);
       let user = await userRepository.getByUsername(req.session.user.Username);
