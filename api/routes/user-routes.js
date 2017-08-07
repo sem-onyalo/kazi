@@ -28,8 +28,12 @@ module.exports = function (app) {
         let request = new AuthenticateUserRequest(req.body.Username, req.body.Password);
         let user = await authenticateUserInteractor.execute(request);
         console.log('***TEMP-LOG*** /users/authenticate ' + user);
-        if (user) req.session.user = user;
-        res.redirect('/associations');
+        if (user) {
+          req.session.user = user;
+          res.redirect('/associations');
+        } else {
+          res.status(401).send('Authorization Required');
+        }
       } catch (ex) {
         res.json({ error: ex });
       }
