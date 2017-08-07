@@ -13,7 +13,7 @@ const openPaths = ['/', '/ping', '/users/authenticate'];
 
 module.exports = function(app) {
   app.use(cors());
-  app.options('*', cors());
+  app.options('http://localhost', cors());
   app.use(session({
     secret: 'sde5dB8Qiswn^2skKliOpwF647Df!FFus30F*rr27',
     resave: false,
