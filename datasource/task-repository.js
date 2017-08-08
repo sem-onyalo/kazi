@@ -21,7 +21,7 @@ module.exports = class TaskRepository {
   }
 
   async getByDirectoryId(id) {
-    let text = 'select t.id, t.directory_id, t.name from task t where t.directory_id = $1';
+    let text = 'select t.id, t.directory_id, t.name from task t where t.directory_id = $1 order by t.create_date';
     let params = [id];
     let result = await this._dbContext.query(text, params);
 
