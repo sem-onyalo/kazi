@@ -62,7 +62,7 @@ module.exports = class DirectoryRepository {
   }
 
   async update(directory) {
-    let text = 'update directory set association_id = $1, parent_id = $2, key = $3, name = $4 where id = $5';
+    let text = 'update directory set association_id = $1, parent_id = $2, key = $3, name = $4, update_timestamp = current_timestamp where id = $5';
     let params = [directory.AssociationId, directory.ParentId, directory.Key, directory.Name, directory.Id];
     let result = await this._dbContext.query(text, params);
 
@@ -73,7 +73,7 @@ module.exports = class DirectoryRepository {
     let text = 'delete from directory where id = $1';
     let params = [id];
     let result = await this._dbContext.query(text, params);
-    
+
     return result.rowCount;
   }
 }

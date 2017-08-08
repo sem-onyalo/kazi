@@ -49,7 +49,7 @@ module.exports = class UserRepository {
   }
 
   async update(user) {
-    let text = 'update usr set first_name = $2, last_name = $3, username = $4, password = $5, auth_token = $6, user_role = $7 where id = $1';
+    let text = 'update usr set first_name = $2, last_name = $3, username = $4, password = $5, auth_token = $6, user_role = $7, update_timestamp = current_timestamp where id = $1';
     let params = [user.Id, user.FirstName, user.LastName, user.Username, user.Password, user.AuthToken, user.UserRole];
     let result = await this._dbContext.query(text, params);
 

@@ -21,7 +21,7 @@ module.exports = class TaskRepository {
   }
 
   async getByDirectoryId(id) {
-    let text = 'select t.id, t.directory_id, t.name from task t where t.directory_id = $1 order by t.create_date';
+    let text = 'select t.id, t.directory_id, t.name from task t where t.directory_id = $1 order by t.create_timestamp desc';
     let params = [id];
     let result = await this._dbContext.query(text, params);
 
@@ -49,7 +49,7 @@ module.exports = class TaskRepository {
   }
 
   async update(task) {
-    let text = 'update task set directory_id = $2, name = $3 where id = $1'
+    let text = 'update task set directory_id = $2, name = $3, update_timestamp = current_timestamp where id = $1'
     let params = [task.Id, task.DirectoryId, task.Name];
     let result = await this._dbContext.query(text, params);
 
