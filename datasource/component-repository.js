@@ -22,18 +22,18 @@ module.exports = class ComponentRepository {
     return entities;
   }
 
-  // async getById(id) {
-  //   let text = 'select c.id, c.key, c.name from component c where c.id = $1';
-  //   let params = [id];
-  //   let result = await this._dbContext.query(text, params);
-  //
-  //   let entity = null;
-  //   if (result !== null && result.rows.length > 0) {
-  //     entity = new Entity.Component(result.rows[i].id, result.rows[i].key, result.rows[i].name);
-  //   }
-  //
-  //   return entity;
-  // }
+  async getById(id) {
+    let text = 'select c.id, c.key, c.name from component c where c.id = $1';
+    let params = [id];
+    let result = await this._dbContext.query(text, params);
+
+    let entity = null;
+    if (result && result.rows.length > 0) {
+      entity = new Entity.Component(result.rows[0].id, result.rows[0].key, result.rows[0].name);
+    }
+
+    return entity;
+  }
 
   async getByDirectoryId(id) { // TODO should be getRelationshipByDirectoryId
     let text = 'select c.id, c.key, c.name, coalesce(dc.directory_id,0) as directory_id from component c '

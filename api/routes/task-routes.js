@@ -9,6 +9,8 @@ const GetTaskComponentsDataInteractor = require('../../interactor/get-task-compo
 const GetTaskComponentsDataRequest = require('../../interactor/model/get-task-components-data-request');
 const GetTasksInteractor = require('../../interactor/get-tasks');
 const GetTasksRequest = require('../../interactor/model/get-tasks-request');
+const PostTaskComponentDataInteractor = require('../../interactor/post-task-component-data');
+const PostTaskComponentDataRequest = require('../../interactor/model/post-task-component-data-request');
 const UpdateTaskInteractor = require('../../interactor/update-task');
 const UpdateTaskRequest = require('../../interactor/model/update-task-request');
 
@@ -61,9 +63,19 @@ module.exports = function(app) {
 
   app.route('/tasks/:taskId/components')
     .get(async (req, res) => {
-      try{
+      try {
         let interactor = DependencyFactory.resolve(GetTaskComponentsDataInteractor);
         let request = new GetTaskComponentsDataRequest(req.params.taskId, req.query.displaytype);
+        let response = await interactor.execute(request);
+        res.json({ Data: response, status: 'OK' });
+      } catch (ex) {
+        res.json({ error: ex });
+      }
+    })
+    .post(async(req, res) => {
+      try {
+        let interactor = DependencyFactory.resolve(PostTaskComponentDataInteractor);
+        let request = new PostTaskComponentDataRequest(req.params.taskId, req.body.ComponentId, req.query.displaytype, req.body.Data);
         let response = await interactor.execute(request);
         res.json({ Data: response, status: 'OK' });
       } catch (ex) {
