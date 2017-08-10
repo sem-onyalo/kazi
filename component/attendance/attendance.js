@@ -1,7 +1,8 @@
 "use strict";
 
 module.exports = class Attendance {
-  constructor(userId, firstName, lastName, isAttending) {
+  constructor(taskId, userId, firstName, lastName, isAttending) {
+    this.TaskId = taskId;
     this.UserId = userId;
     this.FirstName = firstName;
     this.LastName = lastName;
