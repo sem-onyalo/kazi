@@ -79,6 +79,7 @@ module.exports = function(app) {
         let response = await interactor.execute(request);
         res.json({ Data: response, status: 'OK' });
       } catch (ex) {
+        console.log(ex);
         res.json({ error: ex });
       }
     });
