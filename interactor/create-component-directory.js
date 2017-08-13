@@ -8,5 +8,7 @@ module.exports = class CreateComponentDirectory {
   async execute(createComponentDirectoryRequest) {
     let rowsAffected = await this._componentRepository.addToDirectory(createComponentDirectoryRequest.ComponentId, createComponentDirectoryRequest.DirectoryId);
     if (rowsAffected === 0) throw 'There was an error adding the component to the directory or the component or directory does not exist';
+    let component = await this._componentRepository.getByComponentIdAndDirectoryId(createComponentDirectoryRequest.ComponentId, createComponentDirectoryRequest.DirectoryId);
+    return component;
   }
 }

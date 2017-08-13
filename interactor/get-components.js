@@ -7,7 +7,7 @@ module.exports = class GetComponents {
 
   async execute(request) {
     if (request.DirectoryId) {
-      return await this._componentRepository.getByDirectoryId(request.DirectoryId);
+      return await this._componentRepository.getRelationshipByDirectoryId(request.DirectoryId);
     } else {
       return await this._componentRepository.get();
     }

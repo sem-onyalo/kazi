@@ -35,24 +35,6 @@ module.exports = class ComponentRepository {
     return entity;
   }
 
-  async getByDirectoryId(id) { // TODO should be getRelationshipByDirectoryId
-    let text = 'select c.id, c.key, c.name, coalesce(dc.directory_id,0) as directory_id from component c '
-      + 'left join directory_component dc on dc.component_id = c.id and dc.directory_id = $1';
-    let params = [id];
-    let result = await this._dbContext.query(text, params);
-
-    let entities = [];
-    if (result !== null && result.rows.length > 0) {
-      for (let i = 0; i < result.rows.length; i++) {
-        let component = new Entity.Component(result.rows[i].id, result.rows[i].key, result.rows[i].name);
-        component.DirectoryId = result.rows[i].directory_id;
-        entities.push(component);
-      }
-    }
-
-    return entities;
-  }
-
   async getByTaskId(id) {
     let text = 'select c.id, c.key, c.name from component c '
       + 'inner join directory_component dc on dc.component_id = c.id '
@@ -66,6 +48,60 @@ module.exports = class ComponentRepository {
     if (result && result.rows.length > 0) {
       for (let i = 0; i < result.rows.length; i++) {
         let component = new Entity.Component(result.rows[i].id, result.rows[i].key, result.rows[i].name);
+        entities.push(component);
+      }
+    }
+
+    return entities;
+  }
+
+  async getByDirectoryId(id) {
+    let text = 'select c.id, c.key, c.name, dc.directory_id from component c '
+      + 'inner join directory_component dc on dc.component_id = c.id '
+      + 'where dc.directory_id = $1';
+    let params = [id];
+    let result = await this._dbContext.query(text, params);
+
+    let entities = [];
+    if (result && result.rows.length > 0) {
+      for (let i = 0; i < result.rows.length; i++) {
+        let component = new Entity.Component(result.rows[i].id, result.rows[i].key, result.rows[i].name);
+        component.DirectoryId = result.rows[i].directory_id;
+        entities.push(component);
+      }
+    }
+
+    return entities;
+  }
+
+  async getByComponentIdAndDirectoryId(componentId, directoryId) {
+    let text = 'select c.id, c.key, c.name, dc.directory_id from component c '
+      + 'inner join directory_component dc on dc.component_id = c.id '
+      + 'where dc.directory_id = $1 '
+      + 'and dc.component_id = $2';
+    let params = [directoryId, componentId];
+    let result = await this._dbContext.query(text, params);
+
+    let entity = null;
+    if (result && result.rows.length > 0) {
+      entity = new Entity.Component(result.rows[0].id, result.rows[0].key, result.rows[0].name);
+      entity.DirectoryId = result.rows[0].directory_id;
+    }
+
+    return entity;
+  }
+
+  async getRelationshipByDirectoryId(id) {
+    let text = 'select c.id, c.key, c.name, coalesce(dc.directory_id,0) as directory_id from component c '
+      + 'left join directory_component dc on dc.component_id = c.id and dc.directory_id = $1';
+    let params = [id];
+    let result = await this._dbContext.query(text, params);
+
+    let entities = [];
+    if (result !== null && result.rows.length > 0) {
+      for (let i = 0; i < result.rows.length; i++) {
+        let component = new Entity.Component(result.rows[i].id, result.rows[i].key, result.rows[i].name);
+        component.DirectoryId = result.rows[i].directory_id;
         entities.push(component);
       }
     }

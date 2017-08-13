@@ -24,9 +24,10 @@ module.exports = function(app) {
       try {
         let createComponentDirectory = DependencyFactory.resolve(CreateComponentDirectoryInteractor);
         let request = new CreateComponentDirectoryRequest(req.params.componentId, req.params.directoryId);
-        await createComponentDirectory.execute(request);
-        res.json({ ComponentId: req.params.componentId, DirectoryId: req.params.directoryId, Status: 'CREATED' });
+        let response = await createComponentDirectory.execute(request);
+        res.json({ Component: response, Status: 'CREATED' });
       } catch (ex) {
+        console.log(ex);
         res.json({ error: ex });
       }
     });
