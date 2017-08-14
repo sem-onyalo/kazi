@@ -14,7 +14,7 @@ module.exports = {
 
     let entity = null;
     if (result && result.rows.length > 0) {
-      entity = new Event(result.rows[0].task_id, result.rows[0].event_date, result.rows[0].event_time);
+      entity = new Event(result.rows[0].task_id, result.rows[0].event_date.toISOString().substring(0, 10), result.rows[0].event_time);
     }
 
     return entity;

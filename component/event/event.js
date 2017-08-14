@@ -3,7 +3,7 @@
 module.exports = class Event {
   constructor(taskId, eventDate, eventTime) {
     this.TaskId = taskId;
-    this.EventDate = eventDate.toISOString().substring(0, 10);
+    this.EventDate = eventDate;
     this.EventTime = eventTime;
   }
 }
