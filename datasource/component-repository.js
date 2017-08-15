@@ -40,7 +40,8 @@ module.exports = class ComponentRepository {
       + 'inner join directory_component dc on dc.component_id = c.id '
       + 'inner join directory d on d.id = dc.directory_id '
       + 'inner join task t on t.directory_id = d.id '
-      + 'where t.id = $1';
+      + 'where t.id = $1 '
+      + 'order by dc.component_order';
     let params = [id];
     let result = await this._dbContext.query(text, params);
 
@@ -110,7 +111,10 @@ module.exports = class ComponentRepository {
   }
 
   async addToDirectory(componentId, directoryId) {
-    let text = 'insert into directory_component(directory_id, component_id) values ($1, $2)';
+    let text = 'insert into directory_component(directory_id, component_id, component_order) '
+      + 'select $1, $2, coalesce(max(component_order), 0) + 1 '
+      + 'from directory_component '
+      + 'where directory_id = $1';
     let params = [directoryId, componentId];
     let result = await this._dbContext.query(text, params);
     return result.rowCount;
