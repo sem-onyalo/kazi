@@ -20,7 +20,6 @@ module.exports = {
   },
 
   hashPassword: async (password) => {
-    console.log(await bcrypt.hash(password, 10));
     return await bcrypt.hash(password, 10);
   },
 
