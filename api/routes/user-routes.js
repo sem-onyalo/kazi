@@ -17,6 +17,7 @@ module.exports = function (app) {
         let user = await createUserInteractor.execute(request);
         res.json(user);
       } catch (ex) {
+        console.log(ex);
         res.json({ error: ex });
       }
     });
@@ -34,6 +35,7 @@ module.exports = function (app) {
           res.status(401).send('Authorization Required');
         }
       } catch (ex) {
+        console.log(ex);
         res.json({ error: ex });
       }
     });

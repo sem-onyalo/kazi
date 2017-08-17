@@ -32,7 +32,7 @@ module.exports = class CreateUser {
     let user = await this._userRepository.getByUsername(createUserRequest.Username);
     if (user !== null) throw 'A user with that username already exists';
 
-    user = new Entity.User(0, createUserRequest.FirstName, createUserRequest.LastName, createUserRequest.Username, createUserRequest.Password, authToken, createUserRequest.UserRole);
+    user = new Entity.User(0, createUserRequest.FirstName, createUserRequest.LastName, createUserRequest.Username, SecurityHelper.hashPassword(createUserRequest.Password), authToken, createUserRequest.UserRole);
     user = await this._userRepository.create(user);
 
     if (user === null) throw 'Could not create user';
@@ -42,7 +42,7 @@ module.exports = class CreateUser {
     if (addUserResult === 0) throw 'Created user but could not add to association';
 
     delete user.Password;
-    
+
     return user;
   }
 }

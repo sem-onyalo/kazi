@@ -21,6 +21,7 @@
     "sinon": "^2.3.5"
   },
   "dependencies": {
+    "bcrypt-as-promised": "1.1.0",
     "body-parser": "1.17.2",
     "cors": "2.8.4",
     "crypto": "0.0.3",
