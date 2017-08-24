@@ -1,14 +1,29 @@
 "use strict";
 
 const Attendance = require('./attendance');
-const Repository = require('./repository');
+const Constants = require('../../util/constants');
 const GetComponentDataResponse = require('../_shared/get-component-data-response');
 const PostComponentDataResponse = require('../_shared/post-component-data-response');
+const Repository = require('./repository');
 
 module.exports = {
   getData: async (request) => {
     let response = new GetComponentDataResponse(request.EntityId, request.EntityType);
-    response.DataObject = await Repository.getAttendance(request.EntityId);
+
+    switch (request.EntityType) {
+      case Constants.EntityType.TASK:
+        response.DataObject = await Repository.getAttendance(request.EntityId);
+        break;
+
+      case Constants.EntityType.DIRECTORY:
+        response.DataObject = [];
+        break;
+
+      default:
+        response.DataObject = { error: 'Unsupported action' };
+        break;
+    }
+
     return response;
   },
 
