@@ -5,6 +5,8 @@ const CreateDirectoryRequest = require('../../interactor/model/create-directory-
 const DeleteDirectoryInteractor = require('../../interactor/delete-directory');
 const DeleteDirectoryRequest = require('../../interactor/model/delete-directory-request');
 const DependencyFactory = require('../../factory/dependency-factory');
+const GetDirectoryComponentsDataInteractor = require('../../interactor/get-directory-components-data');
+const GetDirectoryComponentsDataRequest = require('../../interactor/model/get-directory-components-data-request');
 const GetDirectoriesInteractor = require('../../interactor/get-directories');
 const GetDirectoriesRequest = require('../../interactor/model/get-directories-request');
 const UpdateDirectoryInteractor = require('../../interactor/update-directory');
@@ -53,6 +55,19 @@ module.exports = function(app) {
         await deleteDirectoryInteractor.execute(request);
         res.json({ status: 'OK'});
       } catch (ex) {
+        res.json({ error: ex });
+      }
+    });
+
+  app.route('/directories/:directoryId/components')
+    .get(async (req, res) => {
+      try {
+        let interactor = DependencyFactory.resolve(GetDirectoryComponentsDataInteractor);
+        let request = new GetDirectoryComponentsDataRequest(req.params.directoryId);
+        let response = await interactor.execute(request);
+        res.json({ Components: response, status: 'OK' });
+      } catch (ex) {
+        console.log(ex);
         res.json({ error: ex });
       }
     });
