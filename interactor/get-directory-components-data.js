@@ -25,11 +25,13 @@ module.exports = class GetDirectoryComponentsData {
       if (interactor) {
         let getDataRequest = new GetComponentDataRequest(request.DirectoryId, Constants.EntityType.DIRECTORY, request.DisplayType);
         let getDataResponse = await interactor.getData(getDataRequest);
-        response.ComponentsData.push({
-          id: components[i].Id,
-          key: components[i].Key,
-          data: getDataResponse.DataObject
-        });
+        if (getDataResponse.DataObject) {
+          response.ComponentsData.push({
+            id: components[i].Id,
+            key: components[i].Key,
+            data: getDataResponse.DataObject
+          });
+        }
       }
     }
 

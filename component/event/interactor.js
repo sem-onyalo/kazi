@@ -16,7 +16,7 @@ module.exports = {
         break;
 
       case Constants.EntityType.DIRECTORY:
-        response.DataObject = [];
+        response.DataObject = undefined;
         break;
 
       default:
