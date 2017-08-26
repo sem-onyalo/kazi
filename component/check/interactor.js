@@ -31,12 +31,12 @@ module.exports = {
     let check = await Repository.getByTaskId(request.EntityId);
     if (check) {
       check.IsChecked = request.Data.IsChecked;
-      if (!check.IsChecked) check.UserId = 0;
+      check.UserId = request.Data.UserId;
       await Repository.updateCheck(check);
     } else {
       check = new Check(request.EntityId);
       check.IsChecked = request.Data.IsChecked;
-      if (check.IsChecked) check.UserId = request.Data.UserId;
+      check.UserId = request.Data.UserId;
       await Repository.saveCheck(check);
     }
 
