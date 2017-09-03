@@ -5,10 +5,14 @@ const CreateDirectoryRequest = require('../../interactor/model/create-directory-
 const DeleteDirectoryInteractor = require('../../interactor/delete-directory');
 const DeleteDirectoryRequest = require('../../interactor/model/delete-directory-request');
 const DependencyFactory = require('../../factory/dependency-factory');
+const GetDirectoryComponentDataInteractor = require('../../interactor/get-directory-component-data');
+const GetDirectoryComponentDataRequest = require('../../interactor/model/get-directory-component-data-request');
 const GetDirectoryComponentsDataInteractor = require('../../interactor/get-directory-components-data');
 const GetDirectoryComponentsDataRequest = require('../../interactor/model/get-directory-components-data-request');
 const GetDirectoriesInteractor = require('../../interactor/get-directories');
 const GetDirectoriesRequest = require('../../interactor/model/get-directories-request');
+const PostDirectoryComponentDataInteractor = require('../../interactor/post-directory-component-data');
+const PostDirectoryComponentDataRequest = require('../../interactor/model/post-directory-component-data-request');
 const UpdateDirectoryInteractor = require('../../interactor/update-directory');
 const UpdateDirectoryRequest = require('../../interactor/model/update-directory-request');
 
@@ -66,6 +70,30 @@ module.exports = function(app) {
         let request = new GetDirectoryComponentsDataRequest(req.params.directoryId);
         let response = await interactor.execute(request);
         res.json({ Components: response, status: 'OK' });
+      } catch (ex) {
+        console.log(ex);
+        res.json({ error: ex });
+      }
+    });
+
+  app.route('/directories/:directoryId/components/:componentKey')
+    .get(async (req, res) => {
+      try {
+        let interactor = DependencyFactory.resolve(GetDirectoryComponentDataInteractor);
+        let request = new GetDirectoryComponentDataRequest(req.params.directoryId, req.params.componentKey);
+        let response = await interactor.execute(request);
+        res.json({ Component: response, status: 'OK' });
+      } catch (ex) {
+        console.log(ex);
+        res.json({ error: ex });
+      }
+    })
+    .post(async(req, res) => {
+      try {
+        let interactor = DependencyFactory.resolve(PostDirectoryComponentDataInteractor);
+        let request = new PostDirectoryComponentDataRequest(req.params.directoryId, req.params.componentKey, req.body.Data);
+        let response = await interactor.execute(request);
+        res.json({ Data: response, status: 'OK' });
       } catch (ex) {
         console.log(ex);
         res.json({ error: ex });

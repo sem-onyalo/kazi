@@ -6,7 +6,7 @@
   "scripts": {
     "test": "mocha $(find . -name '*.spec.js')",
     "start": "node server.js",
-    "start-dev": "nodemon server.js"
+    "dev": "nodemon server.js"
   },
   "engines": {
     "node": "8.0.0"
