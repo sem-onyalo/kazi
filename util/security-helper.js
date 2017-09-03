@@ -5,6 +5,8 @@ const bcrypt = require('bcrypt-as-promised');
 
 const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 
+var _sessionUser;
+
 module.exports = {
   generateRandomString : function(length) {
     var randomBytes = crypto.randomBytes(length);
@@ -30,5 +32,13 @@ module.exports = {
       console.log('compare password exception: ' + ex.message);
       return false;
     }
+  },
+
+  getSessionUser: () => {
+    return _sessionUser;
+  },
+
+  setSessionUser: (user) => {
+    _sessionUser = user;
   }
 }

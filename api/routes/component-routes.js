@@ -15,7 +15,8 @@ module.exports = function(app) {
         let components = await getComponents.execute(request);
         res.json(components);
       } catch (ex) {
-        res.json({ error: ex });
+        console.log(ex);
+        res.json({ error: ex.message });
       }
     });
 

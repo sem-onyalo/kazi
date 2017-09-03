@@ -1,6 +1,7 @@
 "use strict";
 
 const Entity = require('../entity');
+const SecurityHelper = require('../util/security-helper');
 
 module.exports = class ComponentRepository {
   constructor(dbContext) {
@@ -36,7 +37,8 @@ module.exports = class ComponentRepository {
   }
 
   async getByTaskId(id) {
-    let text = 'select c.id, c.key, c.name from component c '
+    let text = 'select c.id, c.key, c.name '
+      + 'from component c '
       + 'inner join directory_component dc on dc.component_id = c.id '
       + 'inner join directory d on d.id = dc.directory_id '
       + 'inner join task t on t.directory_id = d.id '
@@ -57,7 +59,8 @@ module.exports = class ComponentRepository {
   }
 
   async getByDirectoryId(id) {
-    let text = 'select c.id, c.key, c.name, dc.directory_id from component c '
+    let text = 'select c.id, c.key, c.name, dc.directory_id '
+      + 'from component c '
       + 'inner join directory_component dc on dc.component_id = c.id '
       + 'where dc.directory_id = $1';
     let params = [id];
@@ -76,7 +79,8 @@ module.exports = class ComponentRepository {
   }
 
   async getByComponentIdAndDirectoryId(componentId, directoryId) {
-    let text = 'select c.id, c.key, c.name, dc.directory_id from component c '
+    let text = 'select c.id, c.key, c.name, dc.directory_id '
+      + 'from component c '
       + 'inner join directory_component dc on dc.component_id = c.id '
       + 'where dc.directory_id = $1 '
       + 'and dc.component_id = $2';
@@ -93,9 +97,13 @@ module.exports = class ComponentRepository {
   }
 
   async getRelationshipByDirectoryId(id) {
-    let text = 'select c.id, c.key, c.name, coalesce(dc.directory_id,0) as directory_id from component c '
-      + 'left join directory_component dc on dc.component_id = c.id and dc.directory_id = $1';
-    let params = [id];
+    let text = 'select c.id, c.key, c.name, coalesce(dc.directory_id,0) as directory_id '
+      + 'from component c '
+      + 'inner join usr_role ur on ur.id = $2 '
+      + 'left join directory_component dc on dc.component_id = c.id and dc.directory_id = $1 '
+      + 'where (ur.id < 2 and c.type in (0,1)) or (ur.id > 1 and c.type = 1) '
+      + 'order by dc.directory_id, c.name';
+    let params = [id, SecurityHelper.getSessionUser().UserRole];
     let result = await this._dbContext.query(text, params);
 
     let entities = [];

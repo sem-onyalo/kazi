@@ -7,6 +7,7 @@ const CreateUserRequest = require('../../interactor/model/create-user-request');
 const DependencyFactory = require('../../factory/dependency-factory');
 const UpdateUserInteractor = require('../../interactor/update-user');
 const UpdateUserRequest = require('../../interactor/model/update-user-request');
+const SecurityHelper = require('../../util/security-helper');
 
 module.exports = function (app) {
   app.route('/users')
@@ -30,6 +31,7 @@ module.exports = function (app) {
         let user = await authenticateUserInteractor.execute(request);
         if (user) {
           req.session.user = user;
+          SecurityHelper.setSessionUser(user);
           res.json(user);
         } else {
           res.status(401).send('Authorization Required');
@@ -43,6 +45,7 @@ module.exports = function (app) {
   app.route('/users/expire')
     .get((req, res) => {
       try {
+        SecurityHelper.setSessionUser(undefined);
         req.session.destroy();
         res.redirect('/');
       } catch (ex) {
