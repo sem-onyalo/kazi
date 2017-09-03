@@ -23,7 +23,7 @@ module.exports = function(app) {
         let tasks = await getTasksInteractor.execute(request);
         res.json(tasks);
       } catch (ex) {
-        res.json({ error: ex });
+        res.json({ status: 'Internal Server Error', error: ex.message });
       }
     });
 
@@ -35,7 +35,7 @@ module.exports = function(app) {
         let task = await createTaskInteractor.execute(request);
         res.json(task);
       } catch (ex) {
-        res.json({ error: ex });
+        res.json({ status: 'Internal Server Error', error: ex.message });
       }
     });
 
@@ -47,7 +47,7 @@ module.exports = function(app) {
         let task = await updateTaskInteractor.execute(request);
         res.json(task);
       } catch (ex) {
-        res.json({ error: ex });
+        res.json({ status: 'Internal Server Error', error: ex.message });
       }
     })
     .delete(async (req, res) => {
@@ -57,7 +57,7 @@ module.exports = function(app) {
         await deleteTaskInteractor.execute(request);
         res.json({ status: 'OK' });
       } catch (ex) {
-        res.json({ error: ex });
+        res.json({ status: 'Internal Server Error', error: ex.message });
       }
     });
 
@@ -70,7 +70,7 @@ module.exports = function(app) {
         res.json({ Data: response, status: 'OK' });
       } catch (ex) {
         console.log(ex);
-        res.json({ error: ex });
+        res.json({ status: 'Internal Server Error', error: ex.message });
       }
     })
     .post(async(req, res) => {
@@ -81,7 +81,7 @@ module.exports = function(app) {
         res.json({ Data: response, status: 'OK' });
       } catch (ex) {
         console.log(ex);
-        res.json({ error: ex });
+        res.json({ status: 'Internal Server Error', error: ex.message });
       }
     });
 }

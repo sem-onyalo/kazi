@@ -25,7 +25,7 @@ module.exports = function(app) {
         let directories = await getDirectoriesInteractor.execute(request);
         res.json(directories);
       } catch (ex) {
-        res.json({ error: ex });
+        res.json({ status: 'Internal Server Error', error: ex.message });
       }
     });
 
@@ -37,7 +37,7 @@ module.exports = function(app) {
         let directory = await createDirectoryInteractor.execute(request);
         res.json(directory);
       } catch (ex) {
-        res.json({ error: ex });
+        res.json({ status: 'Internal Server Error', error: ex.message });
       }
     });
 
@@ -49,7 +49,7 @@ module.exports = function(app) {
         let directory = await updateDirectoryInteractor.execute(request);
         res.json(directory);
       } catch (ex) {
-        res.json({ error: ex });
+        res.json({ status: 'Internal Server Error', error: ex.message });
       }
     })
     .delete(async (req, res) => {
@@ -59,7 +59,7 @@ module.exports = function(app) {
         await deleteDirectoryInteractor.execute(request);
         res.json({ status: 'OK'});
       } catch (ex) {
-        res.json({ error: ex });
+        res.json({ status: 'Internal Server Error', error: ex.message });
       }
     });
 
@@ -72,7 +72,7 @@ module.exports = function(app) {
         res.json({ Components: response, status: 'OK' });
       } catch (ex) {
         console.log(ex);
-        res.json({ error: ex });
+        res.json({ status: 'Internal Server Error', error: ex.message });
       }
     });
 
@@ -85,7 +85,7 @@ module.exports = function(app) {
         res.json({ Component: response, status: 'OK' });
       } catch (ex) {
         console.log(ex);
-        res.json({ error: ex });
+        res.json({ status: 'Internal Server Error', error: ex.message });
       }
     })
     .post(async(req, res) => {
@@ -96,7 +96,7 @@ module.exports = function(app) {
         res.json({ Data: response, status: 'OK' });
       } catch (ex) {
         console.log(ex);
-        res.json({ error: ex });
+        res.json({ status: 'Internal Server Error', error: ex.message });
       }
     });
 }

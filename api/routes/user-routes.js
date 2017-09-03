@@ -19,7 +19,7 @@ module.exports = function (app) {
         res.json(user);
       } catch (ex) {
         console.log(ex);
-        res.json({ error: ex });
+        res.json({ status: 'Internal Server Error', error: ex.message });
       }
     });
 
@@ -38,7 +38,7 @@ module.exports = function (app) {
         }
       } catch (ex) {
         console.log(ex);
-        res.json({ error: ex });
+        res.json({ status: 'Internal Server Error', error: ex.message });
       }
     });
 
@@ -49,7 +49,7 @@ module.exports = function (app) {
         req.session.destroy();
         res.redirect('/');
       } catch (ex) {
-        res.json({ error: ex });
+        res.json({ status: 'Internal Server Error', error: ex.message });
       }
     });
 
@@ -61,7 +61,7 @@ module.exports = function (app) {
         let user = await updateUserInteractor.execute(request);
         res.json(user);
       } catch (ex) {
-        res.json({ error: ex });
+        res.json({ status: 'Internal Server Error', error: ex.message });
       }
     });
 }

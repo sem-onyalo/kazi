@@ -17,7 +17,7 @@ module.exports = function(app) {
   //       let associations = await getUserAssociations.execute(request);
   //       res.json(associations);
   //     } catch (ex) {
-  //       res.json({ error: ex });
+  //       res.json({ status: 'Internal Server Error', error: ex.message });
   //     }
   //   });
 
@@ -29,7 +29,7 @@ module.exports = function(app) {
         let associations = await getUserAssociations.execute(request);
         res.json(associations);
       } catch (ex) {
-        res.json({ error: ex });
+        res.json({ status: 'Internal Server Error', error: ex.message });
       }
     })
     .post(async (req, res) => {
@@ -51,7 +51,7 @@ module.exports = function(app) {
         let response = await setupAssociationInteractor.execute(request);
         res.json(response);
       } catch (ex) {
-        res.json({ error: ex });
+        res.json({ status: 'Internal Server Error', error: ex.message });
       }
     });
 }

@@ -16,7 +16,7 @@ module.exports = function(app) {
         res.json(components);
       } catch (ex) {
         console.log(ex);
-        res.json({ error: ex.message });
+        res.json({ status: 'Internal Server Error', error: ex.message });
       }
     });
 
@@ -29,7 +29,7 @@ module.exports = function(app) {
         res.json({ Component: response, Status: 'CREATED' });
       } catch (ex) {
         console.log(ex);
-        res.json({ error: ex });
+        res.json({ status: 'Internal Server Error', error: ex.message });
       }
     });
 }
