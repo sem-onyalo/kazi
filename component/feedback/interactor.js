@@ -29,7 +29,7 @@ module.exports = {
 
   postData: async (request) => {
     let settings = await Repository.getFeedbackSettings();
-    let feedback = new Feedback(settings.DirectoryId, request.Data.UserId, request.Data.Title, request.Data.Details);
+    let feedback = new Feedback(settings.DirectoryId, request.Data.Title, request.Data.Details, request.Data.UserId);
     return await Repository.saveFeedback(feedback);
   }
 }
