@@ -5,9 +5,11 @@ const AuthenticateUserRequest = require('../../interactor/model/authenticate-use
 const CreateUserInteractor = require('../../interactor/create-user');
 const CreateUserRequest = require('../../interactor/model/create-user-request');
 const DependencyFactory = require('../../factory/dependency-factory');
+const RegisterUserInteractor = require('../../interactor/register-user');
+const RegisterUserRequest = require('../../interactor/model/register-user-request');
+const SecurityHelper = require('../../util/security-helper');
 const UpdateUserInteractor = require('../../interactor/update-user');
 const UpdateUserRequest = require('../../interactor/model/update-user-request');
-const SecurityHelper = require('../../util/security-helper');
 
 module.exports = function (app) {
   app.route('/users')
@@ -29,6 +31,25 @@ module.exports = function (app) {
         let authenticateUserInteractor = DependencyFactory.resolve(AuthenticateUserInteractor);
         let request = new AuthenticateUserRequest(req.body.Username, req.body.Password);
         let user = await authenticateUserInteractor.execute(request);
+        if (user) {
+          req.session.user = user;
+          SecurityHelper.setSessionUser(user);
+          res.json(user);
+        } else {
+          res.status(401).send('Authorization Required');
+        }
+      } catch (ex) {
+        console.log(ex);
+        res.json({ status: 'Internal Server Error', error: ex.message });
+      }
+    });
+
+  app.route('/users/register')
+    .post(async (req, res) => {
+      try {
+        let registerUserInteractor = DependencyFactory.resolve(RegisterUserInteractor);
+        let request = new RegisterUserRequest(req.body.Username, req.body.Password, req.body.AuthToken);
+        let user = await registerUserInteractor.execute(request);
         if (user) {
           req.session.user = user;
           SecurityHelper.setSessionUser(user);

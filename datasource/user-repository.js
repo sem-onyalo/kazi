@@ -15,7 +15,7 @@ module.exports = class UserRepository {
     let result = await this._dbContext.query(text, params);
 
     let entity = null;
-    if (result !== null && result.rows.length > 0) {
+    if (result && result.rows.length > 0) {
       entity = new Entity.User(result.rows[0].id, result.rows[0].first_name, result.rows[0].last_name, result.rows[0].username, result.rows[0].password, result.rows[0].auth_token, result.rows[0].user_role);
     }
 
@@ -28,7 +28,20 @@ module.exports = class UserRepository {
     let result = await this._dbContext.query(text, params);
 
     let entity = null;
-    if (result !== null && result.rows.length > 0) {
+    if (result && result.rows.length > 0) {
+      entity = new Entity.User(result.rows[0].id, result.rows[0].first_name, result.rows[0].last_name, result.rows[0].username, result.rows[0].password, result.rows[0].auth_token, result.rows[0].user_role);
+    }
+
+    return entity;
+  }
+
+  async getByUsernameAndAuthToken(username, authToken) {
+    let text = selectUserSql + ' from usr u where u.username = $1 and u.auth_token = $2';
+    let params = [username, authToken];
+    let result = await this._dbContext.query(text, params);
+
+    let entity = null;
+    if (result && result.rows.length > 0) {
       entity = new Entity.User(result.rows[0].id, result.rows[0].first_name, result.rows[0].last_name, result.rows[0].username, result.rows[0].password, result.rows[0].auth_token, result.rows[0].user_role);
     }
 
@@ -40,7 +53,7 @@ module.exports = class UserRepository {
     let params = [user.FirstName, user.LastName, user.Username, user.Password, user.AuthToken, user.UserRole];
     let result = await this._dbContext.query(text, params);
 
-    if (result !== null && result.rows.length > 0) {
+    if (result && result.rows.length > 0) {
       user.Id = result.rows[0].id;
       return user;
     }
@@ -53,6 +66,6 @@ module.exports = class UserRepository {
     let params = [user.Id, user.FirstName, user.LastName, user.Username, user.Password, user.AuthToken, user.UserRole];
     let result = await this._dbContext.query(text, params);
 
-    return result !== null && result.rowCount > 0 ? user : null;
+    return result && result.rowCount > 0 ? user : null;
   }
 }

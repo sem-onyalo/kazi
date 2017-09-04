@@ -9,7 +9,7 @@ const session = require('express-session');
 const taskRoutes = require('./task-routes');
 const userRoutes = require('./user-routes');
 
-const openPaths = ['/', '/ping', '/users/authenticate'];
+const openPaths = ['/', '/ping', '/users/authenticate', '/users/register'];
 
 module.exports = function(app) {
   app.use(cors({ origin: 'http://localhost', credentials: true }));
@@ -40,7 +40,6 @@ async function authorizeRequest(req, res, next) {
       let user = await userRepository.getByUsername(req.session.user.Username);
       if (user) {
         delete user.Password;
-        // req.user = user;
         req.session.user = user;
       } else {
         return res.status(401).send('Authorization Required');

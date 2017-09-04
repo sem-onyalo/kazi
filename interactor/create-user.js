@@ -32,7 +32,8 @@ module.exports = class CreateUser {
     let user = await this._userRepository.getByUsername(createUserRequest.Username);
     if (user !== null) throw 'A user with that username already exists';
 
-    user = new Entity.User(0, createUserRequest.FirstName, createUserRequest.LastName, createUserRequest.Username, SecurityHelper.hashPassword(createUserRequest.Password), authToken, createUserRequest.UserRole);
+    let hashedPassword = await SecurityHelper.hashPassword(createUserRequest.Password);
+    user = new Entity.User(0, createUserRequest.FirstName, createUserRequest.LastName, createUserRequest.Username, hashedPassword, authToken, createUserRequest.UserRole);
     user = await this._userRepository.create(user);
 
     if (user === null) throw 'Could not create user';

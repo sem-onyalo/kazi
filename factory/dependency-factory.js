@@ -31,6 +31,7 @@ _defaultContainer.registerWithTypes(require('../datasource/task-repository')).as
 _defaultContainer.registerWithTypes(require('../datasource/task-repository')).as(require('../interactor/update-task'));
 _defaultContainer.registerWithTypes(require('../datasource/user-repository')).as(require('../interactor/update-user'));
 _defaultContainer.registerWithTypes(require('../datasource/user-repository')).as(require('../interactor/authenticate-user'));
+_defaultContainer.registerWithTypes(require('../datasource/user-repository')).as(require('../interactor/register-user'));
 
 module.exports = {
   resolve: function(type, container) {
