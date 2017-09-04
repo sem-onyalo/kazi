@@ -18,9 +18,9 @@ module.exports = class PostDirectoryComponentData {
    */
   async execute(request) {
     let interactor = ComponentsManager.getInteractorByKey(request.ComponentKey);
-    let postDataRequest = new PostComponentDataRequest(0, Constants.EntityType.DIRECTORY, undefined, request.ComponentData);
+    let postDataRequest = new PostComponentDataRequest(request.DirectoryId, Constants.EntityType.DIRECTORY, undefined, request.ComponentData);
     let postDataResponse = await interactor.postData(postDataRequest);
-    let response = new PostDirectoryComponentDataResponse(0, request.ComponentKey, postDataResponse.Data);
+    let response = new PostDirectoryComponentDataResponse(request.DirectoryId, request.ComponentKey, postDataResponse.Data);
     return response;
   }
 }
