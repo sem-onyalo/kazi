@@ -4,6 +4,23 @@ const Message = require('./message');
 const _dbContext = DependencyFactory.resolve(require('../../datasource/db-context'));
 
 module.exports = {
+  getMessageById: async (id) => {
+    let text = 'select t.id as task_id, u.id as usr_id, u.first_name, u.last_name, cm.id as message_id, cm.message, cm.create_timestamp '
+      + 'from component_messaging cm '
+      + 'inner join usr u on u.id = cm.usr_id '
+      + 'inner join task t on t.id = cm.task_id '
+      + 'where cm.id = $1';
+    let params = [id];
+    let result = await _dbContext.query(text, params);
+
+    let entity = null;
+    if (result && result.rows.length > 0) {
+      entity = new Message(result.rows[0].message_id, result.rows[0].task_id, result.rows[0].usr_id, result.rows[0].message, result.rows[0].first_name, result.rows[0].last_name, result.rows[0].create_timestamp);
+    }
+
+    return entity;
+  },
+
   getMessages: async (taskId) => {
     let text = 'select t.id as task_id, u.id as usr_id, u.first_name, u.last_name, cm.id as message_id, cm.message, cm.create_timestamp '
       + 'from component_messaging cm '
@@ -46,14 +63,21 @@ module.exports = {
   },
 
   saveMessage: async (message) => {
-    let text = 'insert into component_messaging (task_id, usr_id, message) '
-      + 'values ($1, $2, $3) returning id, create_timestamp';
+    let text = 'with inserted as ( '
+      + 'insert into component_messaging (task_id, usr_id, message) '
+      + 'values ($1, $2, $3) returning id, create_timestamp, usr_id '
+      + ') '
+      + 'select inserted.id, inserted.create_timestamp, u.first_name, u.last_name '
+      + 'from inserted '
+      + 'inner join usr u on u.id = inserted.usr_id';
     let params = [message.TaskId, message.UserId, message.Message];
     let result = await _dbContext.query(text, params);
 
     if (result && result.rows.length > 0) {
       message.Id = result.rows[0].id;
       message.CreateTimestamp = result.rows[0].create_timestamp;
+      message.FirstName = result.rows[0].first_name;
+      message.LastName = result.rows[0].last_name;
       return message;
     }
 
