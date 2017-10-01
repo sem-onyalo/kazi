@@ -12,7 +12,11 @@ module.exports = {
 
     switch (request.EntityType) {
       case Constants.EntityType.TASK:
-        response.DataObject = await Repository.getMessages(request.EntityId);
+        if (request.QueryParams.lastmessageid) {
+          response.DataObject = await Repository.getMessagesByLastMessageId(request.EntityId, request.QueryParams.lastmessageid);
+        } else {
+          response.DataObject = await Repository.getMessages(request.EntityId);
+        }
         break;
 
       case Constants.EntityType.DIRECTORY:
