@@ -1,8 +1,8 @@
 "use strict";
 
 module.exports = class GetTaskComponentsDataRequest {
-  constructor(taskId, displayType) {
+  constructor(taskId, queryParams) {
     this.TaskId = taskId;
-    this.DisplayType = displayType;
+    this.QueryParams = queryParams;
   }
 }

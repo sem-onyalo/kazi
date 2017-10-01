@@ -5,7 +5,7 @@ const Constants = require('../util/constants');
 const GetComponentDataRequest = require('../component/_shared/get-component-data-request');
 const GetTaskComponentsDataResponse = require('./model/get-task-components-data-response');
 
-module.exports = class GetTaskComponentData {
+module.exports = class GetTaskComponentsData {
   constructor(componentRepository) {
     this._componentRepository = componentRepository;
   }
@@ -23,7 +23,7 @@ module.exports = class GetTaskComponentData {
     for (let i = 0; i < components.length; i++) {
       let interactor = ComponentsManager.getInteractorByKey(components[i].Key);
       if (interactor) {
-        let getDataRequest = new GetComponentDataRequest(request.TaskId, Constants.EntityType.TASK, request.DisplayType);
+        let getDataRequest = new GetComponentDataRequest(request.TaskId, Constants.EntityType.TASK, request.QueryParams);
         let getDataResponse = await interactor.getData(getDataRequest);
         response.ComponentsData.push({
           id: components[i].Id,

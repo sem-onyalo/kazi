@@ -5,6 +5,8 @@ const CreateTaskRequest = require('../../interactor/model/create-task-request');
 const DeleteTaskInteractor = require('../../interactor/delete-task');
 const DeleteTaskRequest = require('../../interactor/model/delete-task-request');
 const DependencyFactory = require('../../factory/dependency-factory');
+const GetTaskComponentDataInteractor = require('../../interactor/get-task-component-data');
+const GetTaskComponentDataRequest = require('../../interactor/model/get-task-component-data-request');
 const GetTaskComponentsDataInteractor = require('../../interactor/get-task-components-data');
 const GetTaskComponentsDataRequest = require('../../interactor/model/get-task-components-data-request');
 const GetTasksInteractor = require('../../interactor/get-tasks');
@@ -65,7 +67,7 @@ module.exports = function(app) {
     .get(async (req, res) => {
       try {
         let interactor = DependencyFactory.resolve(GetTaskComponentsDataInteractor);
-        let request = new GetTaskComponentsDataRequest(req.params.taskId, req.query.displaytype);
+        let request = new GetTaskComponentsDataRequest(req.params.taskId, req.query);
         let response = await interactor.execute(request);
         res.json({ Data: response, status: 'OK' });
       } catch (ex) {
@@ -77,6 +79,19 @@ module.exports = function(app) {
       try {
         let interactor = DependencyFactory.resolve(PostTaskComponentDataInteractor);
         let request = new PostTaskComponentDataRequest(req.params.taskId, req.body.ComponentId, req.query.displaytype, req.body.Data);
+        let response = await interactor.execute(request);
+        res.json({ Data: response, status: 'OK' });
+      } catch (ex) {
+        console.log(ex);
+        res.json({ status: 'Internal Server Error', error: ex.message });
+      }
+    });
+
+  app.route('/tasks/:taskId/components/:componentId')
+    .get(async (req, res) => {
+      try {
+        let interactor = DependencyFactory.resolve(GetTaskComponentDataInteractor);
+        let request = new GetTaskComponentDataRequest(req.params.taskId, req.params.componentId, req.query);
         let response = await interactor.execute(request);
         res.json({ Data: response, status: 'OK' });
       } catch (ex) {
