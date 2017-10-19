@@ -33,6 +33,19 @@ module.exports = class AssociationRepository {
     return entity;
   }
 
+  async getPublicByKey(key) {
+    let text = 'select a.id, a.key, a.name, a.alias from association a where a.key = $1 and a.is_public = TRUE';
+    let params = [key];
+    let result = await this._dbContext.query(text, params);
+
+    let entity = null;
+    if (result !== null && result.rows.length > 0) {
+      entity = new Entity.Association(result.rows[0].id, result.rows[0].key, result.rows[0].name, result.rows[0].alias);
+    }
+
+    return entity;
+  }
+
   async getByUserId(id) {
     let text = 'select a.id, a.key, a.name, a.alias from association a inner join association_usr au on au.association_id = a.id where au.usr_id = $1';
     let params = [id];

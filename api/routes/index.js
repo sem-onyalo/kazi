@@ -9,7 +9,7 @@ const session = require('express-session');
 const taskRoutes = require('./task-routes');
 const userRoutes = require('./user-routes');
 
-const openPaths = ['/', '/ping', '/users/authenticate', '/users/register'];
+const openPaths = ['/', '/ping', '/users/authenticate', '/users/register', '/associations'];
 
 module.exports = function(app) {
   app.use(cors({ origin: ['http://localhost', 'http://semonyalo.com'], credentials: true }));
@@ -34,7 +34,7 @@ module.exports = function(app) {
 }
 
 async function authorizeRequest(req, res, next) {
-  if (openPaths.indexOf(req.path) < 0) {
+  if (isOpenPath(req.path)) {
     if (req.session && req.session.user) {
       let userRepository = DependencyFactory.resolve(Datasource.UserRepository);
       let user = await userRepository.getByUsername(req.session.user.Username);
@@ -50,4 +50,16 @@ async function authorizeRequest(req, res, next) {
   }
 
   next();
+}
+
+function isOpenPath(path) {
+  if (openPaths.indexOf(path) > -1) {
+    return true;
+  } else {
+    for (let i = 0; i < openPaths.length; i++) {
+      if (openPaths[i].indexOf(path) > -1) return true;
+    }
+  }
+
+  return false;
 }

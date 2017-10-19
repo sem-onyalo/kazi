@@ -3,6 +3,8 @@
 const CreateAssociationInteractor = require('../../interactor/create-association');
 const CreateAssociationRequest = require('../../interactor/model/create-association-request');
 const DependencyFactory = require('../../factory/dependency-factory');
+const GetAssociationInteractor = require('../../interactor/get-association');
+const GetAssociationRequest = require('../../interactor/model/get-association-request');
 const GetUserAssociationsInteractor = require('../../interactor/get-user-associations');
 const GetUserAssociationsRequest = require('../../interactor/model/get-user-associations-request');
 const SetupAssociationInteractor = require('../../interactor/setup-association');
@@ -12,10 +14,14 @@ module.exports = function(app) {
   app.route('/associations')
     .get(async (req, res) => {
       try {
-        let getUserAssociations = DependencyFactory.resolve(GetUserAssociationsInteractor);
-        let request = new GetUserAssociationsRequest(req.session.user.Id);
-        let associations = await getUserAssociations.execute(request);
-        res.json(associations);
+        if (req.session && req.session.user) {
+          let getUserAssociations = DependencyFactory.resolve(GetUserAssociationsInteractor);
+          let request = new GetUserAssociationsRequest(req.session.user.Id);
+          let associations = await getUserAssociations.execute(request);
+          res.json(associations);
+        } else {
+          res.status(401).send('Authorization Required');
+        }
       } catch (ex) {
         res.json({ status: 'Internal Server Error', error: ex.message });
       }
@@ -28,6 +34,19 @@ module.exports = function(app) {
         res.json(association);
       } catch (ex) {
         res.json({ error: 'Unable to create the association' });
+      }
+    });
+
+  app.route('/associations/:key')
+    .get(async (req, res) => {
+      try {
+        let getAssociationInteractor = DependencyFactory.resolve(GetAssociationInteractor);
+        let request = new GetAssociationRequest(req.session && req.session.user);
+        request.AssociationKey = req.params.key;
+        let association = await getAssociationInteractor.execute(request);
+        res.json(association);
+      } catch (ex) {
+        res.json({ status: 'Internal Server Error', error: ex.message });
       }
     });
 

@@ -11,6 +11,7 @@ _defaultContainer.registerWithTypes(require('../datasource/db-context')).as(requ
 _defaultContainer.registerWithTypes(require('../datasource/db-context')).as(require('../datasource/task-repository'));
 _defaultContainer.registerWithTypes(require('../datasource/db-context')).as(require('../datasource/user-repository'));
 _defaultContainer.registerWithTypes(require('../datasource/association-repository')).as(require('../interactor/create-association'));
+_defaultContainer.registerWithTypes(require('../datasource/association-repository')).as(require('../interactor/get-association'));
 _defaultContainer.registerWithTypes(require('../datasource/association-repository')).as(require('../interactor/get-user-associations'));
 _defaultContainer.registerWithTypes(require('../datasource/association-repository'),require('../datasource/directory-repository')).as(require('../interactor/create-directory'));
 _defaultContainer.registerWithTypes(require('../datasource/association-repository'),require('../datasource/user-repository')).as(require('../interactor/create-user'));
