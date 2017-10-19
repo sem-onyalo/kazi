@@ -5,7 +5,7 @@ create table association (
   key varchar(50) not null,
   name varchar(50) not null,
   alias varchar(20) not null,
-  is_pubilc smallint default 0 not null
+  is_public boolean default FALSE not null
 );
 
 create table association_usr (
@@ -91,7 +91,7 @@ create table directory (
   parent_id int default 0 not null,
   key varchar(50) not null,
   name varchar(50) not null,
-  is_pubilc smallint default 0 not null
+  is_public boolean default FALSE not null
 );
 
 create table directory_component (
