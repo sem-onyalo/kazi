@@ -6,6 +6,10 @@ module.exports = class GetDirectories {
   }
 
   async execute(getDirectoresRequest) {
-    return await this._directoryRepository.getByAssociationId(getDirectoresRequest.AssociationId);
+    if (getDirectoresRequest.IsUserSession) {
+      return await this._directoryRepository.getByAssociationId(getDirectoresRequest.AssociationId);
+    } else {
+      return await this._directoryRepository.getPublicByAssociationId(getDirectoresRequest.AssociationId);
+    }
   }
 }

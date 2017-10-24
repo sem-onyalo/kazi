@@ -1,7 +1,8 @@
 "use strict";
 
 module.exports = class GetDirectoriesRequest {
-  constructor(associationId) {
+  constructor(isUserSession, associationId) {
+    this.IsUserSession = isUserSession;
     this.AssociationId = associationId;
   }
 }

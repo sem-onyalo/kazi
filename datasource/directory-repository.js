@@ -48,6 +48,21 @@ module.exports = class DirectoryRepository {
     return entities;
   }
 
+  async getPublicByAssociationId(id) {
+    let text = 'select d.id, d.association_id, d.parent_id, d.key, d.name from directory d where d.association_id = $1 and d.is_public = TRUE';
+    let params = [id];
+    let result = await this._dbContext.query(text, params);
+
+    let entities = [];
+    if (result !== null) {
+      for (let i = 0; i < result.rows.length; i++) {
+        entities.push(new Entity.Directory(result.rows[i].id, result.rows[i].association_id, result.rows[i].parent_id, result.rows[i].key, result.rows[i].name));
+      }
+    }
+
+    return entities;
+  }
+
   async create(directory) {
     let text = 'insert into directory (association_id, parent_id, key, name) values ($1, $2, $3, $4) returning id';
     let params = [directory.AssociationId, directory.ParentId, directory.Key, directory.Name];

@@ -20,8 +20,9 @@ module.exports = function(app) {
   app.route('/associations/:associationId/directories')
     .get(async (req, res) => {
       try {
+        let isUserSession = req.session && req.session.user;
         let getDirectoriesInteractor = DependencyFactory.resolve(GetDirectoriesInteractor);
-        let request = new GetDirectoriesRequest(req.params.associationId);
+        let request = new GetDirectoriesRequest(isUserSession, req.params.associationId);
         let directories = await getDirectoriesInteractor.execute(request);
         res.json(directories);
       } catch (ex) {
