@@ -20,8 +20,7 @@ module.exports = function (app) {
         let user = await createUserInteractor.execute(request);
         res.json(user);
       } catch (ex) {
-        console.log(ex);
-        res.json({ status: 'Internal Server Error', error: ex.message });
+        res.json({ status: 'Internal Server Error', error: typeof ex === 'string' ? ex : ex.message });
       }
     });
 
@@ -39,8 +38,7 @@ module.exports = function (app) {
           res.status(401).send('Authorization Required');
         }
       } catch (ex) {
-        console.log(ex);
-        res.json({ status: 'Internal Server Error', error: ex.message });
+        res.json({ status: 'Internal Server Error', error: typeof ex === 'string' ? ex : ex.message });
       }
     });
 
@@ -58,8 +56,7 @@ module.exports = function (app) {
           res.status(401).send('Authorization Required');
         }
       } catch (ex) {
-        console.log(ex);
-        res.json({ status: 'Internal Server Error', error: ex.message });
+        res.json({ status: 'Internal Server Error', error: typeof ex === 'string' ? ex : ex.message });
       }
     });
 
@@ -70,7 +67,7 @@ module.exports = function (app) {
         req.session.destroy();
         res.redirect('/');
       } catch (ex) {
-        res.json({ status: 'Internal Server Error', error: ex.message });
+        res.json({ status: 'Internal Server Error', error: typeof ex === 'string' ? ex : ex.message });
       }
     });
 
@@ -82,7 +79,7 @@ module.exports = function (app) {
         let user = await updateUserInteractor.execute(request);
         res.json(user);
       } catch (ex) {
-        res.json({ status: 'Internal Server Error', error: ex.message });
+        res.json({ status: 'Internal Server Error', error: typeof ex === 'string' ? ex : ex.message });
       }
     });
 }

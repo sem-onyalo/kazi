@@ -15,8 +15,7 @@ module.exports = function(app) {
         let components = await getComponents.execute(request);
         res.json(components);
       } catch (ex) {
-        console.log(ex);
-        res.json({ status: 'Internal Server Error', error: ex.message });
+        res.json({ status: 'Internal Server Error', error: typeof ex === 'string' ? ex : ex.message });
       }
     });
 
@@ -28,8 +27,7 @@ module.exports = function(app) {
         let response = await createComponentDirectory.execute(request);
         res.json({ Component: response, Status: 'CREATED' });
       } catch (ex) {
-        console.log(ex);
-        res.json({ status: 'Internal Server Error', error: ex.message });
+        res.json({ status: 'Internal Server Error', error: typeof ex === 'string' ? ex : ex.message });
       }
     });
 }

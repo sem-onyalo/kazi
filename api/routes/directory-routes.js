@@ -26,7 +26,7 @@ module.exports = function(app) {
         let directories = await getDirectoriesInteractor.execute(request);
         res.json(directories);
       } catch (ex) {
-        res.json({ status: 'Internal Server Error', error: ex.message });
+        res.json({ status: 'Internal Server Error', error: typeof ex === 'string' ? ex : ex.message });
       }
     });
 
@@ -38,7 +38,7 @@ module.exports = function(app) {
         let directory = await createDirectoryInteractor.execute(request);
         res.json(directory);
       } catch (ex) {
-        res.json({ status: 'Internal Server Error', error: ex.message });
+        res.json({ status: 'Internal Server Error', error: typeof ex === 'string' ? ex : ex.message });
       }
     });
 
@@ -50,7 +50,7 @@ module.exports = function(app) {
         let directory = await updateDirectoryInteractor.execute(request);
         res.json(directory);
       } catch (ex) {
-        res.json({ status: 'Internal Server Error', error: ex.message });
+        res.json({ status: 'Internal Server Error', error: typeof ex === 'string' ? ex : ex.message });
       }
     })
     .delete(async (req, res) => {
@@ -60,7 +60,7 @@ module.exports = function(app) {
         await deleteDirectoryInteractor.execute(request);
         res.json({ status: 'OK'});
       } catch (ex) {
-        res.json({ status: 'Internal Server Error', error: ex.message });
+        res.json({ status: 'Internal Server Error', error: typeof ex === 'string' ? ex : ex.message });
       }
     });
 
@@ -72,8 +72,7 @@ module.exports = function(app) {
         let response = await interactor.execute(request);
         res.json({ Components: response, status: 'OK' });
       } catch (ex) {
-        console.log(ex);
-        res.json({ status: 'Internal Server Error', error: ex.message });
+        res.json({ status: 'Internal Server Error', error: typeof ex === 'string' ? ex : ex.message });
       }
     });
 
@@ -85,8 +84,7 @@ module.exports = function(app) {
         let response = await interactor.execute(request);
         res.json({ Component: response, status: 'OK' });
       } catch (ex) {
-        console.log(ex);
-        res.json({ status: 'Internal Server Error', error: ex.message });
+        res.json({ status: 'Internal Server Error', error: typeof ex === 'string' ? ex : ex.message });
       }
     })
     .post(async(req, res) => {
@@ -96,8 +94,7 @@ module.exports = function(app) {
         let response = await interactor.execute(request);
         res.json({ Data: response, status: 'OK' });
       } catch (ex) {
-        console.log(ex);
-        res.json({ status: 'Internal Server Error', error: ex.message });
+        res.json({ status: 'Internal Server Error', error: typeof ex === 'string' ? ex : ex.message });
       }
     });
 }

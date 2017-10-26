@@ -23,7 +23,7 @@ module.exports = function(app) {
           res.status(401).send('Authorization Required');
         }
       } catch (ex) {
-        res.json({ status: 'Internal Server Error', error: ex.message });
+        res.json({ status: 'Internal Server Error', error: typeof ex === 'string' ? ex : ex.message });
       }
     })
     .post(async (req, res) => {
@@ -46,7 +46,7 @@ module.exports = function(app) {
         let association = await getAssociationInteractor.execute(request);
         res.json(association);
       } catch (ex) {
-        res.json({ status: 'Internal Server Error', error: ex.message });
+        res.json({ status: 'Internal Server Error', error: typeof ex === 'string' ? ex : ex.message });
       }
     });
 
@@ -58,7 +58,7 @@ module.exports = function(app) {
         let response = await setupAssociationInteractor.execute(request);
         res.json(response);
       } catch (ex) {
-        res.json({ status: 'Internal Server Error', error: ex.message });
+        res.json({ status: 'Internal Server Error', error: typeof ex === 'string' ? ex : ex.message });
       }
     });
 }
