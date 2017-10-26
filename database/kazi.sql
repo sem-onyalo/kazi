@@ -21,7 +21,7 @@ create table component (
   key varchar(50) not null,
   name varchar(50) not null,
   type smallint default 1 not null
-);
+); -- insert into component (key, name, type) values ('attendance', 'Attendance', 1), ('volunteer', 'Volunteer', 1), ('location', 'Location', 1), ('event', 'Event', 1), ('check', 'Check', 1), ('feedback', 'Feedback', 0), ('messaging', 'Messaging', 1), ('winloss', 'Win-Loss', 1);
 
 create table component_attendance (
   id serial primary key,
@@ -81,6 +81,12 @@ create table component_volunteer_item (
   id serial primary key,
   directory_id int references directory(id) on delete cascade,
   name varchar(50) not null
+);
+
+create table component_winloss (
+  id serial primary key,
+  task_id int references task(id) on delete cascade,
+  state smallint not null
 );
 
 create table directory (
