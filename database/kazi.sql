@@ -62,6 +62,33 @@ create table component_location (
   location varchar(1024) not null
 );
 
+create table component_table (
+  id serial primary key,
+  name varchar(16) null,
+  task_id int references task(id) on delete cascade
+);
+
+create table component_table_row (
+  id serial primary key,
+  table_id int references component_table(id) on delete cascade,
+  row_order int not null,
+  name varchar(16) null
+);
+
+create table component_table_col (
+  id serial primary key,
+  table_id int references component_table(id) on delete cascade,
+  col_order int not null,
+  name varchar(16) null
+);
+
+create table component_table_data_int (
+  id serial primary key,
+  table_row_id int references component_table_row(id) on delete cascade,
+  table_col_id int references component_table_col(id),
+  value int null
+);
+
 create table component_messaging (
   id serial primary key,
   task_id int references task(id) on delete cascade,
