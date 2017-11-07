@@ -3,6 +3,7 @@
 const DependencyFactory = require('../../factory/dependency-factory');
 const Table = require('./table');
 const TableCell = require('./table-cell');
+const TableData = require('./table-data');
 const TableRow = require('./table-row');
 
 const _dbContext = DependencyFactory.resolve(require('../../datasource/db-context'));
@@ -49,5 +50,41 @@ module.exports = {
         }
 
         return entity;
+    },
+
+    getTableData: async (rowId, colId) => {
+        let text = 'select * from component_table_data_int where table_row_id = $1 and table_col_id = $2';
+        let params = [rowId, colId];
+        let result = await _dbContext.query(text, params);
+
+        let entity = undefined;
+        if (result && result.rows.length > 0) {
+            entity = new TableData(result.rows[0].table_row_id, result.rows[0].table_col_id, result.rows[0].value);
+        }
+
+        return entity;
+    },
+
+    saveTableData: async (tableData) => {
+        let text = 'insert into component_table_data_int (table_row_id, table_col_id, value) values ($1, $2, $3)';
+        let params = [tableData.RowId, tableData.ColId, tableData.Value];
+        let result = await _dbContext.query(text, params);
+        return tableData;
+    },
+
+    updateTableData: async (tableData) => {
+        let text = 'update component_table_data_int set value = $3 where table_row_id = $1 and table_col_id = $2';
+        let params = [tableData.RowId, tableData.ColId, tableData.Value];
+        let result = await _dbContext.query(text, params);
+        return tableData;
+    },
+
+    addTableRow: async (tableId) => {
+        let text = 'insert into component_table_row (table_id, row_order, name) '
+            + "select  $1, max(row_order) + 1, '' " 
+            + 'from component_table_row '
+            + 'where table_id = $1';
+        let params = [tableId];
+        let result = await _dbContext.query(text, params);
     }
 }
