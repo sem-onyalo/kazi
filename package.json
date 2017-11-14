@@ -1,7 +1,7 @@
 {
-  "name": "node-app-1",
+  "name": "kazi-api",
   "version": "1.0.0",
-  "description": "\"kazi application\"",
+  "description": "\"kazi api\"",
   "main": "index.js",
   "scripts": {
     "test": "mocha $(find . -name '*.spec.js')",

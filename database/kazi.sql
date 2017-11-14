@@ -21,13 +21,30 @@ create table component (
   key varchar(50) not null,
   name varchar(50) not null,
   type smallint default 1 not null
-); -- insert into component (key, name, type) values ('attendance', 'Attendance', 1), ('volunteer', 'Volunteer', 1), ('location', 'Location', 1), ('event', 'Event', 1), ('check', 'Check', 1), ('feedback', 'Feedback', 0), ('messaging', 'Messaging', 1), ('winloss', 'Win-Loss', 1);
+); -- insert into component (key, name, type) values ('attendance', 'Attendance', 1), ('volunteer', 'Volunteer', 1), ('location', 'Location', 1), ('event', 'Event', 1), ('check', 'Check', 1), ('feedback', 'Feedback', 0), ('messaging', 'Messaging', 1), ('winloss', 'Win-Loss', 1), ('table', 'Table', 1), ('chart', 'Chart', 1);
 
 create table component_attendance (
   id serial primary key,
   task_id int references task(id) on delete cascade,
   usr_id int not null,
   is_attending boolean not null
+);
+
+create table component_chart_directory (
+  id serial primary key,
+  directory_id int references directory(id) on delete cascade,
+  xaxis_col_num int not null,
+  yaxis_col_num int not null,
+  xaxis_name varchar(16) null,
+  yaxis_name varchar(16) null,
+  name varchar(16) null
+);
+
+create table component_chart_task (
+  id serial primary key,
+  task_id int references task(id) on delete cascade,
+  color varchar(7) null,
+  alias varchar(16) null
 );
 
 create table component_check (
