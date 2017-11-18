@@ -12,7 +12,7 @@ const userRoutes = require('./user-routes');
 const openPaths = ['/ping', '/users/authenticate', '/users/register', '/associations'];
 
 module.exports = function(app) {
-  app.use(cors({ origin: ['http://localhost', 'http://semonyalo.com'], credentials: true }));
+  app.use(cors({ origin: ['http://localhost:8001', 'http://semonyalo.com'], credentials: true }));
   app.options('*', cors());
   app.use(session({
     secret: 'sde5dB8Qiswn^2skKliOpwF647Df!FFus30F*rr27',
