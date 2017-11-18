@@ -3,6 +3,8 @@
 const assert = require('chai').assert;
 const expect = require('chai').expect;
 const sinon = require('sinon');
+require('chai').use(require('chai-as-promised'));
+// require('sinon-as-promised');
 
 const CreateDirectory = require('./create-directory');
 const CreateDirectoryRequest = require('./model/create-directory-request');
@@ -26,61 +28,56 @@ describe('CreateDirectory', () => {
     });
 
     it('should throw an exception if the directory name is empty', () => {
-      let request = new CreateDirectoryRequest('', 16, 8);
-      let createDirectoryFn = function () { createDirectory.execute(request); };
-      expect(createDirectoryFn).to.throw('The directory name cannot be empty');
+      let promises = [];
+      let data = ['', undefined, null];
 
-      request = new CreateDirectoryRequest(null, 16, 8);
-      createDirectoryFn = function () { createDirectory.execute(request); };
-      expect(createDirectoryFn).to.throw('The directory name cannot be empty');
-
-      request = new CreateDirectoryRequest(undefined, 16, 8);
-      createDirectoryFn = function () { createDirectory.execute(request); };
-      expect(createDirectoryFn).to.throw('The directory name cannot be empty');
+      for (let i = 0; i < data.length; i++) {
+        let request = new CreateDirectoryRequest(data[i], 16, 8);
+        promises.push(assert.isRejected(createDirectory.execute(request), 'The directory name cannot be empty'));
+      }
+      
+      return Promise.all(promises);
     });
 
     it('should throw an exception if the association does not exist', () => {
       let request = new CreateDirectoryRequest('My Directory', 16, 8);
+      
       let getAssociationByIdStub = sinon
         .stub(associationRepository, 'getById')
         .returns(null);
 
-      let createAssociationFn = function () { createDirectory.execute(request); };
-
-      expect(createAssociationFn).to.throw('The specified association does not exist');
-
-      getAssociationByIdStub.restore();
-
-      sinon.assert.calledOnce(getAssociationByIdStub);
-      sinon.assert.calledWith(getAssociationByIdStub, 8);
+      return assert.isRejected(createDirectory.execute(request), 'The specified association does not exist')
+        .then(() => {
+          sinon.assert.calledOnce(getAssociationByIdStub);
+          sinon.assert.calledWith(getAssociationByIdStub, 8);
+        });
     });
 
     it('should throw an expection if the parent directory does not exist', () => {
       let request = new CreateDirectoryRequest('My Directory', 16, 8);
       let association = new Entity.Association(8, 'my-association', 'My Association', 'Company');
+
       let getAssociationByIdStub = sinon
         .stub(associationRepository, 'getById')
         .returns(association);
+
       let getDirectoryByIdStub = sinon
         .stub(directoryRepository, 'getById')
         .returns(null);
 
-      let createDirectoryFn = function () { createDirectory.execute(request); };
-
-      expect(createDirectoryFn).to.throw('The specified parent directory does not exist');
-
-      getAssociationByIdStub.restore();
-      getDirectoryByIdStub.restore();
-
-      sinon.assert.calledOnce(getDirectoryByIdStub);
-      sinon.assert.calledWith(getDirectoryByIdStub, 16);
+      return assert.isRejected(createDirectory.execute(request), 'The specified parent directory does not exist')
+        .then(() => {
+          sinon.assert.calledOnce(getDirectoryByIdStub);
+          sinon.assert.calledWith(getDirectoryByIdStub, 16);
+        });
     });
 
     it('should throw an exception if trying to create a direcory with a key already exists', () => {
-      let request = new CreateDirectoryRequest('Dev Inbox', 1, 8);
-      let association = new Entity.Association(8, 'my-association', 'My Association', 'Company');
-      let parentDirectory = new Entity.Directory(1, 8, 0, 'inbox', 'Inbox');
-      let directory = new Entity.Directory(16, 8, 1, 'dev-inbox', 'Dev Inbox');
+      let associationId = 8;
+      let request = new CreateDirectoryRequest('Dev Inbox', 1, associationId);
+      let association = new Entity.Association(associationId, 'my-association', 'My Association', 'Company');
+      let parentDirectory = new Entity.Directory(1, associationId, 0, 'inbox', 'Inbox');
+      let directory = new Entity.Directory(16, associationId, 1, 'dev-inbox', 'Dev Inbox');
 
       let getAssociationByIdStub = sinon
         .stub(associationRepository, 'getById')
@@ -91,22 +88,17 @@ describe('CreateDirectory', () => {
         .returns(parentDirectory);
 
       let getDirectoryByKeyStub = sinon
-        .stub(directoryRepository, 'getByKey')
+        .stub(directoryRepository, 'getByKeyAndAssociationId')
         .returns(directory);
 
-      let createDirectoryFn = function () { createDirectory.execute(request); };
-
-      expect(createDirectoryFn).to.throw('The specified directory already exists');
-
-      getAssociationByIdStub.restore();
-      getDirectoryByIdStub.restore();
-      getDirectoryByKeyStub.restore();
-
-      sinon.assert.calledOnce(getDirectoryByKeyStub);
-      sinon.assert.calledWith(getDirectoryByKeyStub, 'dev-inbox');
+      return assert.isRejected(createDirectory.execute(request), 'The specified directory already exists')
+        .then(() => {
+          sinon.assert.calledOnce(getDirectoryByKeyStub);
+          sinon.assert.calledWith(getDirectoryByKeyStub, 'dev-inbox', associationId);
+        });
     });
 
-    it('should create a directory', () => {
+    it('should create a directory', async () => {
       let request = new CreateDirectoryRequest('Dev Inbox', 1, 8);
       let association = new Entity.Association(8, 'my-association', 'My Association', 'Company');
       let parentDirectory = new Entity.Directory(1, 8, 0, 'inbox', 'Inbox');
@@ -122,14 +114,14 @@ describe('CreateDirectory', () => {
         .returns(parentDirectory);
 
       let getDirectoryByKeyStub = sinon
-        .stub(directoryRepository, 'getByKey')
+        .stub(directoryRepository, 'getByKeyAndAssociationId')
         .returns(null);
 
       let createDirectoryStub = sinon
         .stub(directoryRepository, 'create')
         .returns(expectedCreatedDirectory);
 
-      let directory = createDirectory.execute(request);
+      let directory = await createDirectory.execute(request);
 
       getAssociationByIdStub.restore();
       getDirectoryByIdStub.restore();
