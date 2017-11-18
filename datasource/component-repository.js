@@ -96,6 +96,25 @@ module.exports = class ComponentRepository {
     return entity;
   }
 
+  async getByComponentIdAndTaskId(componentId, taskId) {
+    let text = 'select c.id, c.key, c.name, t.task_id '
+      + 'from component c '
+      + 'inner join directory_component dc on dc.component_id = c.id '
+      + 'inner join task t on t.directory_id = dc.directory_id '
+      + 'where t.task_id = $1 '
+      + 'and dc.component_id = $2';
+    let params = [taskId, componentId];
+    let result = await this._dbContext.query(text, params);
+
+    let entity = null;
+    if (result && result.rows.length > 0) {
+      entity = new Entity.Component(result.rows[0].id, result.rows[0].key, result.rows[0].name);
+      entity.TaskId = result.rows[0].task_id;
+    }
+
+    return entity;
+  }
+
   async getRelationshipByDirectoryId(id) {
     let text = 'select c.id, c.key, c.name, coalesce(dc.directory_id,0) as directory_id '
       + 'from component c '

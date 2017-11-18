@@ -18,7 +18,25 @@ describe('ComponentRepository', () => {
     });
   });
 
-  describe('getByDirectoryId(id)', () => { // TODO should be getRelationshipByDirectoryId
+  describe('getByDirectoryId(id)', () => {
+    it('should export function', () => {
+      expect(componentRepository.getByDirectoryId).to.be.a('function');
+    });
+  });
+
+  describe('getByComponentIdAndDirectoryId(componentId, directoryId)', () => {
+    it('should export function', () => {
+      expect(componentRepository.getByComponentIdAndDirectoryId).to.be.a('function');
+    });
+  });
+  
+  describe('getByComponentIdAndTaskId(componentId, taskId)', () => {
+    it('should export function', () => {
+      expect(componentRepository.getByComponentIdAndTaskId).to.be.a('function');
+    });
+  });
+  
+  describe('getRelationshipByDirectoryId(id)', () => {
     it('should export function', () => {
       expect(componentRepository.getByDirectoryId).to.be.a('function');
     });
