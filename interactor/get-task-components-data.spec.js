@@ -27,7 +27,8 @@ describe('GetTaskComponentsData', () => {
     it('should get the components from the component repository', async () => {
       let taskId = 1;
       let getComponentsByTaskIdStub = sinon
-        .stub(componentRepository, 'getByTaskId');
+        .stub(componentRepository, 'getByTaskId')
+        .returns([]);
 
       let request = new GetTaskComponentsDataRequest(taskId);
       await getTaskComponentsData.execute(request)
