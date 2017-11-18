@@ -23,7 +23,7 @@ describe('GetTasks', () => {
       expect(getTasks.execute).to.be.a('function');
     });
 
-    it('should return a collection of tasks', () => {
+    it('should return a collection of tasks', async () => {
       let request = new GetTasksRequest(1);
       let expectedTasks = [
         new Entity.Task(10, 'task 1', 1, 'my-inbox', 'My Inbox'),
@@ -34,7 +34,7 @@ describe('GetTasks', () => {
         .stub(taskRepository, 'getByDirectoryId')
         .returns(expectedTasks);
 
-      let tasks = getTasks.execute(request);
+      let tasks = await getTasks.execute(request);
 
       sinon.assert.calledOnce(getTasksByDirectoryIdStub);
       sinon.assert.calledWith(getTasksByDirectoryIdStub, 1);
