@@ -9,12 +9,16 @@ module.exports = class AuthenticateUser {
 
   async execute(authenticateUserRequest) {
     let user = await this._userRepository.getByUsername(authenticateUserRequest.Username);
-    let isValid = await SecurityHelper.comparePassword(authenticateUserRequest.Password, user.Password);
-    if (isValid) {
-      delete user.Password;
-    } else {
-      user = undefined;
+
+    if (user) {
+      let isValid = await SecurityHelper.comparePassword(authenticateUserRequest.Password, user.Password);
+      if (isValid) {
+        delete user.Password;
+      } else {
+        user = undefined;
+      }
     }
+    
     return user;
   }
 }
