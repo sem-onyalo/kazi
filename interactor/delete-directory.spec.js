@@ -3,6 +3,7 @@
 const assert = require('chai').assert;
 const expect = require('chai').expect;
 const sinon = require('sinon');
+require('chai').use(require('chai-as-promised'));
 
 const Datasource = require('../datasource');
 const DeleteDirectory = require('./delete-directory');
@@ -22,15 +23,14 @@ describe('DeleteDirectory', () => {
       expect(deleteDirectory.execute).to.be.a('function');
     });
 
-    it('should delete the directory', () => {
+    it('should delete the directory', async () => {
       let deleteDirectoryStub = sinon
         .stub(directoryRepository, 'delete')
         .returns(true);
 
       let request = new DeleteDirectoryRequest(1);
-      deleteDirectory.execute(request);
+      await deleteDirectory.execute(request);
 
-      deleteDirectoryStub.restore();
       sinon.assert.calledOnce(deleteDirectoryStub);
       sinon.assert.calledWith(deleteDirectoryStub, 1);
     });
@@ -38,13 +38,11 @@ describe('DeleteDirectory', () => {
     it('should throw an exception if the directory could not be deleted or it did not exist', () => {
       let deleteDirectoryStub = sinon
         .stub(directoryRepository, 'delete')
-        .returns(false);
+        .returns(0);
 
       let request = new DeleteDirectoryRequest(1);
-      let deleteDirectoryFn = function () { deleteDirectory.execute(request); };
 
-      expect(deleteDirectoryFn).to.throw('There was an error deleting the directory or the directory does not exist');
-      deleteDirectoryStub.restore();
+      return assert.isRejected(deleteDirectory.execute(request), 'There was an error deleting the directory or the directory does not exist');
     });
   });
 });
