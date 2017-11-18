@@ -41,7 +41,7 @@ describe('SetupAssociation', () => {
       expect(setupAssociation.execute).to.be.a('function');
     });
 
-    it('should create the association, directory then user', () => {
+    it('should create the association, then directory then user', async () => {
       let associationId = 1;
       let associationAlias = 'Company';
       let associationName = 'My Association';
@@ -61,9 +61,9 @@ describe('SetupAssociation', () => {
         .returns(directory);
 
       let userId = 1;
-      let firstName = 'John', lastName = 'Doe', username = 'john.doe', password = 'Password1!', userRole = Entity.UserRole.ADMIN;
-      let user = new Entity.User(userId, firstName, lastName, username, password, '', userRole);
-      let createUserRequest = new CreateUserRequest(firstName, lastName, username, password, userRole, associationId);
+      let firstName = 'John', lastName = 'Doe', username = 'john.doe', password = 'Password1!', authToken = null, userRole = Entity.UserRole.ADMIN;
+      let user = new Entity.User(userId, firstName, lastName, username, password, authToken, userRole);
+      let createUserRequest = new CreateUserRequest(firstName, lastName, username, password, authToken, userRole, associationId);
 
       let createUserStub = sinon
         .stub(createUser, 'execute')
@@ -72,7 +72,7 @@ describe('SetupAssociation', () => {
       let request = new SetupAssociationRequest(associationName, associationAlias, directoryName, firstName, lastName, username, password);
       let expectedResponse = new SetupAssociationResponse(association, directory, user);
 
-      let response = setupAssociation.execute(request);
+      let response = await setupAssociation.execute(request);
 
       sinon.assert.calledOnce(createAssociationStub);
       sinon.assert.calledWith(createAssociationStub, createAssociationRequest);
