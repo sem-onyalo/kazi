@@ -23,21 +23,43 @@ describe('GetDirectories', () => {
       expect(getDirectories.execute).to.be.a('function');
     });
 
-    it('should return a collection of directories', () => {
-      let request = new GetDirectoriesRequest(5);
+    it('should return a collection of directories using the directory repository\'s getPublicByAssociationId method if user session is true', async () => {
+      let request = new GetDirectoriesRequest(false, 5);
+
       let expectedDirectories = [
         new Entity.Directory(1, 5, 0, 'inbox', 'Inbox'),
         new Entity.Directory(2, 5, 1, 'dev-inbox', 'Dev Inbox'),
         new Entity.Directory(3, 5, 1, 'qa-inbox', 'QA Inbox')
       ];
-      let getDirectoriesByAssociationIdStub = sinon
+
+      let getDirectoriesStub = sinon
+        .stub(directoryRepository, 'getPublicByAssociationId')
+        .returns(expectedDirectories);
+
+      let directories = await getDirectories.execute(request);
+
+      sinon.assert.calledOnce(getDirectoriesStub);
+      sinon.assert.calledWith(getDirectoriesStub, 5);
+      assert.deepEqual(directories, expectedDirectories, 'Returned directories collection was not expected value');
+    });
+    
+    it('should return a collection of directories using the directory repository\'s getPublicByAssociationId method if user session is false', async () => {
+      let request = new GetDirectoriesRequest(true, 5);
+
+      let expectedDirectories = [
+        new Entity.Directory(1, 5, 0, 'inbox', 'Inbox'),
+        new Entity.Directory(2, 5, 1, 'dev-inbox', 'Dev Inbox'),
+        new Entity.Directory(3, 5, 1, 'qa-inbox', 'QA Inbox')
+      ];
+
+      let getDirectoriesStub = sinon
         .stub(directoryRepository, 'getByAssociationId')
         .returns(expectedDirectories);
 
-      let directories = getDirectories.execute(request);
+      let directories = await getDirectories.execute(request);
 
-      sinon.assert.calledOnce(getDirectoriesByAssociationIdStub);
-      sinon.assert.calledWith(getDirectoriesByAssociationIdStub, 5);
+      sinon.assert.calledOnce(getDirectoriesStub);
+      sinon.assert.calledWith(getDirectoriesStub, 5);
       assert.deepEqual(directories, expectedDirectories, 'Returned directories collection was not expected value');
     });
   });
