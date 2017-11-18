@@ -3,6 +3,7 @@
 const assert = require('chai').assert;
 const expect = require('chai').expect;
 const sinon = require('sinon');
+require('chai').use(require('chai-as-promised'));
 
 const CreateTask = require('./create-task');
 const CreateTaskRequest = require('./model/create-task-request');
@@ -26,36 +27,32 @@ describe('CreateTaskRequest', () => {
     });
 
     it('should throw an exception if the task name is empty', () => {
-      let request = new CreateTaskRequest(1, '');
-      let createTaskFn = function() { createTask.execute(request); };
-      expect(createTaskFn).to.throw('The task name cannot be empty');
+      let promises = [];
+      let data = ['', undefined, null];
 
-      request = new CreateTaskRequest(1, null);
-      createTaskFn = function() { createTask.execute(request); };
-      expect(createTaskFn).to.throw('The task name cannot be empty');
+      for (let i = 0; i < data.length; i++) {
+        let request = new CreateTaskRequest(1, data[i]);
+        promises.push(assert.isRejected(createTask.execute(request), 'The task name cannot be empty'));
+      }
 
-      request = new CreateTaskRequest(1, undefined);
-      createTaskFn = function() { createTask.execute(request); };
-      expect(createTaskFn).to.throw('The task name cannot be empty');
+      return Promise.all(promises);
     });
 
     it('should throw an exception if the directory does not exist', () => {
       let request = new CreateTaskRequest(1, 'finish create task interactor');
+
       let getDirectoryByIdStub = sinon
         .stub(directoryRepository, 'getById')
         .returns(null);
 
-      let createTaskFn = function () { createTask.execute(request); };
-
-      expect(createTaskFn).to.throw('The specified directory does not exist');
-
-      getDirectoryByIdStub.restore();
-
-      sinon.assert.calledOnce(getDirectoryByIdStub);
-      sinon.assert.calledWith(getDirectoryByIdStub, 1);
+      return assert.isRejected(createTask.execute(request), 'The specified directory does not exist')
+        .then(() => {
+          sinon.assert.calledOnce(getDirectoryByIdStub);
+          sinon.assert.calledWith(getDirectoryByIdStub, 1);
+        });
     });
 
-    it('should create the task', () => {
+    it('should create the task', async () => {
       let request = new CreateTaskRequest(1, 'finish create task interactor');
       let directory = new Entity.Directory(1, 8, 0, 'inbox', 'Inbox');
       let expectedNewTask = new Entity.Task(0, 'finish create task interactor', 1);
@@ -68,7 +65,7 @@ describe('CreateTaskRequest', () => {
         .stub(taskRepository, 'create')
         .returns(expectedCreatedTask);
 
-      let task = createTask.execute(request);
+      let task = await createTask.execute(request);
 
       createTaskStub.restore();
 
