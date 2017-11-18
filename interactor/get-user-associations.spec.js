@@ -23,7 +23,7 @@ describe('GetUserAssociations', () => {
       expect(getUserAssociations.execute).to.be.a('function');
     });
 
-    it('should return a collection of associations', () => {
+    it('should return a collection of associations', async () => {
       let request = new GetUserAssociationsRequest(1);
       let expectedAssociations = [
         new Entity.Association(1, 'q3edfr443-swede-qeedwq98ek-s443ss', 'My Kazi', 'Personal'),
@@ -33,9 +33,7 @@ describe('GetUserAssociations', () => {
         .stub(associationRepository, 'getByUserId')
         .returns(expectedAssociations);
 
-      let associations = getUserAssociations.execute(request);
-
-      getAssociationsByUserIdStub.restore();
+      let associations = await getUserAssociations.execute(request);
 
       sinon.assert.calledOnce(getAssociationsByUserIdStub);
       sinon.assert.calledWith(getAssociationsByUserIdStub, 1);
