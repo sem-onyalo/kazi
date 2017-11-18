@@ -3,6 +3,7 @@
 const assert = require('chai').assert;
 const expect = require('chai').expect;
 const sinon = require('sinon');
+require('chai').use(require('chai-as-promised'));
 
 const Datasource = require('../datasource');
 const Entity = require('../entity');
@@ -26,23 +27,24 @@ describe('UpdateDirectory', () => {
     });
 
     it('should throw an exception if the directory name is empty', () => {
+      let promises = [];
       let data = [null, undefined, ''];
       for (let i = 0; i < data.length; i++) {
         request.DirectoryName = data[i];
-        let updateDirectoryFn = function () { updateDirectory.execute(request); };
-        expect(updateDirectoryFn).to.throw('The directory name cannot be empty');
+        promises.push(assert.isRejected(updateDirectory.execute(request), 'The directory name cannot be empty'));
       }
+
+      return Promise.all(promises);
     });
 
-    it('should update the directory', () => {
+    it('should update the directory', async () => {
       let expectedDirectory = new Entity.Directory(2, 1, 1, 'dev-inbox', 'Dev Inbox');
       let updateDirectoryStub = sinon
         .stub(directoryRepository, 'update')
         .returns(expectedDirectory);
 
-      let directory = updateDirectory.execute(request);
+      let directory = await updateDirectory.execute(request);
 
-      updateDirectoryStub.restore();
       sinon.assert.calledOnce(updateDirectoryStub);
       sinon.assert.calledWith(updateDirectoryStub, expectedDirectory);
       assert.strictEqual(directory, expectedDirectory, 'The returned directory was not the expected value');
@@ -53,9 +55,7 @@ describe('UpdateDirectory', () => {
         .stub(directoryRepository, 'update')
         .returns(null);
 
-      let updateDirectoryFn = function () { updateDirectory.execute(request); };
-      expect(updateDirectoryFn).to.throw('There was an error updating the directory or the directory does not exist');
-      updateDirectoryStub.restore();
+      return assert.isRejected(updateDirectory.execute(request), 'There was an error updating the directory or the directory does not exist');
     });
   });
 });
