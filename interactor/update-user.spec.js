@@ -3,6 +3,7 @@
 const assert = require('chai').assert;
 const expect = require('chai').expect;
 const sinon = require('sinon');
+require('chai').use(require('chai-as-promised'));
 
 const Datasource = require('../datasource/');
 const Entity = require('../entity');
@@ -26,78 +27,104 @@ describe('UpdateUser', () => {
     });
 
     it('should throw an exception if the first name is empty', () => {
+      let promises = [];
       let data = [null, undefined, ''];
       for (let i = 0; i < data.length; i++) {
         request.FirstName = data[i];
-        let updateUserFn = function () { updateUser.execute(request); };
-        expect(updateUserFn).to.throw('The first name cannot be empty');
+        promises.push(assert.isRejected(updateUser.execute(request), 'The first name cannot be empty'));
       }
+
+      return Promise.all(promises);
     });
 
     it('should throw an exception if the last name is empty', () => {
+      let promises = [];
       let data = [null, undefined, ''];
       for (let i = 0; i < data.length; i++) {
         request.LastName = data[i];
-        let updateUserFn = function () { updateUser.execute(request); };
-        expect(updateUserFn).to.throw('The last name cannot be empty');
+        promises.push(assert.isRejected(updateUser.execute(request), 'The last name cannot be empty'));
       }
+
+      return Promise.all(promises);
     });
 
     it('should throw an exception if the username is empty', () => {
+      let promises = [];
       let data = [null, undefined, ''];
       for (let i = 0; i < data.length; i++) {
         request.Username = data[i];
-        let updateUserFn = function () { updateUser.execute(request); };
-        expect(updateUserFn).to.throw('The username cannot be empty');
+        promises.push(assert.isRejected(updateUser.execute(request), 'The username cannot be empty'));
       }
+
+      return Promise.all(promises);
     });
 
     it('should throw an exception if password does not meet strength requirements (at least 8 or more, one upper, one lower, one numeric, and one special character)', () => {
+      let promises = [];
       let data = ['123456789', 'abcdefghi', 'ABCDEFGHI', '!@#$%^&*()', 'P@w1'];
       for (var i = 0; i < data.length; i++) {
         request.Password = data[i];
-        let updateUserFn = function () { updateUser.execute(request); };
-        expect(updateUserFn).to.throw('The password must be a minimum of 8 characters and include at least one upper case, one lower case, one numeric, and one special character');
+        promises.push(assert.isRejected(updateUser.execute(request), 'The password must be a minimum of 8 characters and include at least one upper case, one lower case, one numeric, and one special character'));
       }
+
+      return Promise.all(promises);
     });
 
     it('should throw an exception if user role is not expected value', () => {
+      let promises = [];
       let data = [0, 1, 4];
       for (var i = 0; i < data.length; i++) {
         request.UserRole = data[i];
-        let updateUserFn = function () { updateUser.execute(request); };
-        expect(updateUserFn).to.throw('The user role is invalid');
+        promises.push(assert.isRejected(updateUser.execute(request), 'The user role is invalid'));
       }
+
+      return Promise.all(promises);
     });
 
-    it('should update the user', () => {
-      let expectedUser = new Entity.User(1, 'John', 'Doe', 'john.doe', 'Password1!', '', Entity.UserRole.USER);
+    it('should update the user', async () => {
+      let request = new UpdateUserRequest(1, 'John', 'Doe', 'jdoe', 'Password1!', '', Entity.UserRole.USER);
+      let updatedUser = new Entity.User(1, 'John', 'Doe', 'jdoe', 'Password1!', '', Entity.UserRole.USER);
+      let expectedUser = new Entity.User(1, 'John', 'Doe', 'jdoe', 'Password1!', '', Entity.UserRole.USER);
+      delete expectedUser.Password;
+
+      let getUserStub = sinon
+        .stub(userRepository, 'getByUsername')
+        .returns(new Entity.User(1, 'John', 'Doe', 'john.doe', 'Password1!', '', Entity.UserRole.USER));
+    
       let updateUserStub = sinon
         .stub(userRepository, 'update')
-        .returns(expectedUser);
+        .returns(new Entity.User(1, 'John', 'Doe', 'jdoe', 'Password1!', '', Entity.UserRole.USER));
 
-      expectedUser.Username = 'jdoe';
-      request.Username = 'jdoe';
-      let actualUser = updateUser.execute(request);
-
-      updateUserStub.restore();
+      let actualUser = await updateUser.execute(request);
 
       sinon.assert.calledOnce(updateUserStub);
-      sinon.assert.calledWith(updateUserStub, expectedUser);
+      sinon.assert.calledWith(updateUserStub, updatedUser);
+
       assert.deepEqual(actualUser, expectedUser, 'The returned user was not expected value');
     });
 
     it('should throw an exception if the user was not updated or the user does not exist', () => {
+      let expectedUser = new Entity.User(1, 'John', 'Doe', 'john.doe', 'Password1!', '', Entity.UserRole.USER);
+
+      let getUserStub = sinon
+        .stub(userRepository, 'getByUsername')
+        .returns(expectedUser);
+        
       let updateUserStub = sinon
         .stub(userRepository, 'update')
         .returns(null);
 
-      let updateUserFn = function () { updateUser.execute(request); };
-      expect(updateUserFn).to.throw('There was an error updating the user or the user does not exist');
+      return assert.isRejected(updateUser.execute(request), 'There was an error updating the user or the user does not exist');
     });
 
-    it('should update the user with an auto-generated token if the password is empty', () => {
+    it('should update the user with an auto-generated token if the password is empty', async () => {
       let expectedAuthTokenLength = 64;
+      let expectedUser = new Entity.User(1, 'John', 'Doe', 'john.doe', 'Password1!', '', Entity.UserRole.USER);
+
+      let getUserStub = sinon
+        .stub(userRepository, 'getByUsername')
+        .returns(expectedUser);
+
       let updateUserStub = sinon
         .stub(userRepository, 'update')
         .returnsArg(0);
@@ -105,7 +132,7 @@ describe('UpdateUser', () => {
       let data = [null, undefined, ''];
       for (let i = 0; i < data.length; i++) {
         request.Password = data[i];
-        let actualUser = updateUser.execute(request);
+        let actualUser = await updateUser.execute(request);
 
         assert.strictEqual(actualUser.AuthToken.length, expectedAuthTokenLength, 'Auth token should have been generated if password is empty');
       }
