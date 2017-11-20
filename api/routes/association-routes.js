@@ -28,10 +28,14 @@ module.exports = function(app) {
     })
     .post(async (req, res) => {
       try {
-        let createAssociationInteractor = DependencyFactory.resolve(CreateAssociationInteractor);
-        let request = new CreateAssociationRequest(req.body.Name, req.body.Alias);
-        let association = await createAssociationInteractor.execute(request);
-        res.json(association);
+        if (req.session && req.session.user) {
+          let createAssociationInteractor = DependencyFactory.resolve(CreateAssociationInteractor);
+          let request = new CreateAssociationRequest(req.body.Name, req.body.Alias);
+          let association = await createAssociationInteractor.execute(request);
+          res.json(association);
+        } else {
+          res.status(401).send('Authorization Required');
+        }
       } catch (ex) {
         res.json({ error: 'Unable to create the association' });
       }

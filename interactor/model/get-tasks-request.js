@@ -1,7 +1,8 @@
 "use strict";
 
 module.exports = class GetTasksRequest {
-  constructor(directoryId) {
+  constructor(isUserSession, directoryId) {
+    this.IsUserSession = isUserSession;
     this.DirectoryId = directoryId;
   }
 }

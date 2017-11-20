@@ -23,8 +23,8 @@ describe('GetTasks', () => {
       expect(getTasks.execute).to.be.a('function');
     });
 
-    it('should return a collection of tasks', async () => {
-      let request = new GetTasksRequest(1);
+    it('should return a collection of tasks using the task repository\'s getByDirectoryId method', async () => {
+      let request = new GetTasksRequest(true, 1);
       let expectedTasks = [
         new Entity.Task(10, 'task 1', 1, 'my-inbox', 'My Inbox'),
         new Entity.Task(11, 'task 2', 1, 'my-inbox', 'My Inbox'),
@@ -32,6 +32,24 @@ describe('GetTasks', () => {
       ];
       let getTasksByDirectoryIdStub = sinon
         .stub(taskRepository, 'getByDirectoryId')
+        .returns(expectedTasks);
+
+      let tasks = await getTasks.execute(request);
+
+      sinon.assert.calledOnce(getTasksByDirectoryIdStub);
+      sinon.assert.calledWith(getTasksByDirectoryIdStub, 1);
+      assert.deepEqual(tasks, expectedTasks, 'Returned tasks collection was not expected value');
+    });
+    
+    it('should return a collection of tasks using the task repository\'s getPublicByDirectoryId method', async () => {
+      let request = new GetTasksRequest(false, 1);
+      let expectedTasks = [
+        new Entity.Task(10, 'task 1', 1, 'my-inbox', 'My Inbox'),
+        new Entity.Task(11, 'task 2', 1, 'my-inbox', 'My Inbox'),
+        new Entity.Task(12, 'task 3', 1, 'my-inbox', 'My Inbox')
+      ];
+      let getTasksByDirectoryIdStub = sinon
+        .stub(taskRepository, 'getPublicByDirectoryId')
         .returns(expectedTasks);
 
       let tasks = await getTasks.execute(request);

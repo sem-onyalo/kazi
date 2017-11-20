@@ -9,7 +9,7 @@ const session = require('express-session');
 const taskRoutes = require('./task-routes');
 const userRoutes = require('./user-routes');
 
-const openPaths = ['/ping', '/users/authenticate', '/users/register', '/associations'];
+const openPaths = ['/ping', '/users/authenticate', '/users/register', '/associations', '/directories'];
 
 module.exports = function(app) {
   app.use(cors({ origin: ['http://localhost:8001', 'http://semonyalo.com'], credentials: true }));

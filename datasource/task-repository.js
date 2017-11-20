@@ -21,7 +21,27 @@ module.exports = class TaskRepository {
   }
 
   async getByDirectoryId(id) {
-    let text = 'select t.id, t.directory_id, t.name from task t where t.directory_id = $1 order by t.create_timestamp desc';
+    let text = 'select t.id, t.directory_id, t.name from task t where t.directory_id = $1 order by t.update_timestamp desc';
+    let params = [id];
+    let result = await this._dbContext.query(text, params);
+
+    let entities = [];
+    if (result !== null) {
+      for (let i = 0; i < result.rows.length; i++) {
+        entities.push(new Entity.Task(result.rows[i].id, result.rows[i].name, result.rows[i].directory_id));
+      }
+    }
+
+    return entities;
+  }
+
+  async getPublicByDirectoryId(id) {
+    let text = 'select t.id, t.directory_id, t.name ' 
+      + 'from task t ' 
+      + 'inner join directory d on d.id = t.directory_id '
+      + 'where t.directory_id = $1 '
+      + 'and d.is_public = TRUE '
+      + 'order by t.update_timestamp desc';
     let params = [id];
     let result = await this._dbContext.query(text, params);
 

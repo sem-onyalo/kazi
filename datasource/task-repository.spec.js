@@ -23,6 +23,12 @@ describe('TaskRepository', () => {
       expect(taskRepository.getByDirectoryId).to.be.a('function');
     });
   });
+  
+  describe('getPublicByDirectoryId(id)', () => {
+    it('should export function', () => {
+      expect(taskRepository.getPublicByDirectoryId).to.be.a('function');
+    });
+  });
 
   describe('create(task)', () => {
     it('should export function', () => {

@@ -33,10 +33,14 @@ module.exports = function(app) {
   app.route('/directories')
     .post(async (req, res) => {
       try {
-        let createDirectoryInteractor = DependencyFactory.resolve(CreateDirectoryInteractor);
-        let request = new CreateDirectoryRequest(req.body.Name, req.body.ParentId, req.body.AssociationId);
-        let directory = await createDirectoryInteractor.execute(request);
-        res.json(directory);
+        if (req.session && req.session.user) {
+          let createDirectoryInteractor = DependencyFactory.resolve(CreateDirectoryInteractor);
+          let request = new CreateDirectoryRequest(req.body.Name, req.body.ParentId, req.body.AssociationId);
+          let directory = await createDirectoryInteractor.execute(request);
+          res.json(directory);
+        } else {
+          res.status(401).send('Authorization Required');
+        }
       } catch (ex) {
         res.json({ status: 'Internal Server Error', error: typeof ex === 'string' ? ex : ex.message });
       }
@@ -45,20 +49,28 @@ module.exports = function(app) {
   app.route('/directories/:directoryId')
     .put(async (req, res) => {
       try {
+        if (req.session && req.session.user) {
         let updateDirectoryInteractor = DependencyFactory.resolve(UpdateDirectoryInteractor);
         let request = new UpdateDirectoryRequest(req.params.directoryId, req.body.Name, req.body.ParentId, req.body.AssociationId);
         let directory = await updateDirectoryInteractor.execute(request);
         res.json(directory);
+        } else {
+          res.status(401).send('Authorization Required');
+        }
       } catch (ex) {
         res.json({ status: 'Internal Server Error', error: typeof ex === 'string' ? ex : ex.message });
       }
     })
     .delete(async (req, res) => {
       try {
-        let deleteDirectoryInteractor = DependencyFactory.resolve(DeleteDirectoryInteractor);
-        let request = new DeleteDirectoryRequest(req.params.directoryId);
-        await deleteDirectoryInteractor.execute(request);
-        res.json({ status: 'OK'});
+        if (req.session && req.session.user) {
+          let deleteDirectoryInteractor = DependencyFactory.resolve(DeleteDirectoryInteractor);
+          let request = new DeleteDirectoryRequest(req.params.directoryId);
+          await deleteDirectoryInteractor.execute(request);
+          res.json({ status: 'OK'});
+        } else {
+          res.status(401).send('Authorization Required');
+        }
       } catch (ex) {
         res.json({ status: 'Internal Server Error', error: typeof ex === 'string' ? ex : ex.message });
       }

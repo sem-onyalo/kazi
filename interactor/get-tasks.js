@@ -6,6 +6,10 @@ module.exports = class GetTasks {
   }
 
   async execute(getTasksRequest) {
-    return await this._taskRepository.getByDirectoryId(getTasksRequest.DirectoryId);
+    if (getTasksRequest.IsUserSession) {
+      return await this._taskRepository.getByDirectoryId(getTasksRequest.DirectoryId);
+    } else {
+      return await this._taskRepository.getPublicByDirectoryId(getTasksRequest.DirectoryId);
+    }
   }
 }

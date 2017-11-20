@@ -20,8 +20,9 @@ module.exports = function(app) {
   app.route('/directories/:directoryId/tasks')
     .get(async (req, res) => {
       try {
+        let isUserSession = req.session && req.session.user;
         let getTasksInteractor = DependencyFactory.resolve(GetTasksInteractor);
-        let request = new GetTasksRequest(req.params.directoryId);
+        let request = new GetTasksRequest(isUserSession, req.params.directoryId);
         let tasks = await getTasksInteractor.execute(request);
         res.json(tasks);
       } catch (ex) {
