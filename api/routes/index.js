@@ -9,10 +9,11 @@ const session = require('express-session');
 const taskRoutes = require('./task-routes');
 const userRoutes = require('./user-routes');
 
-const openPaths = ['/ping', '/users/authenticate', '/users/register', '/associations', '/directories'];
+// TODO: revisit how open paths are designated
+const openPaths = ['/ping', '/users/authenticate', '/users/register', '/associations', '/directories', '/tasks'];
 
 module.exports = function(app) {
-  app.use(cors({ origin: ['http://localhost:8001', 'http://semonyalo.com'], credentials: true }));
+  app.use(cors({ origin: ['http://localhost:8001', 'http://app.wazomill.com'], credentials: true }));
   app.options('*', cors());
   app.use(session({
     secret: 'sde5dB8Qiswn^2skKliOpwF647Df!FFus30F*rr27',
