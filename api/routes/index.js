@@ -13,7 +13,8 @@ const userRoutes = require('./user-routes');
 const openPaths = ['/ping', '/users/authenticate', '/users/register', '/associations', '/directories', '/tasks'];
 
 module.exports = function(app) {
-  app.use(cors({ origin: ['http://localhost:8001', 'http://app.wazomill.com'], credentials: true }));
+  // TODO: pull URLs from config
+  app.use(cors({ origin: ['http://localhost:8001', 'http://app.wazomill.com', 'https://quiet-scrubland-30659.herokuapp.com/'], credentials: true }));
   app.options('*', cors());
   app.use(session({
     secret: 'sde5dB8Qiswn^2skKliOpwF647Df!FFus30F*rr27',
