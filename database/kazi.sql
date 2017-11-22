@@ -81,7 +81,7 @@ create table component_location (
 
 create table component_table (
   id serial primary key,
-  name varchar(16) null,
+  name varchar(32) null,
   task_id int references task(id) on delete cascade
 );
 
