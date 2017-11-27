@@ -41,7 +41,8 @@ module.exports = {
                     cells = [];
                 }
 
-                cells.push(new TableCell(result.rows[i].col_id, result.rows[i].col_order, result.rows[i].col_name, result.rows[i].value ? result.rows[i].value : undefined));
+                var value = result.rows[i].value !== undefined && result.rows[i].value !== null && result.rows[i].value !== '' ? result.rows[i].value : undefined;
+                cells.push(new TableCell(result.rows[i].col_id, result.rows[i].col_order, result.rows[i].col_name, value));
             }
 
             rows.push(new TableRow(curRowId, cells, curRowOrder, curRowName));
